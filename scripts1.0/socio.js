@@ -34,33 +34,9 @@ var Socio = {
                 if (data && data.error) {
                     Toolbox.ShowFeedback('feedbackContainer', 'error', data.error);
                 } else {
-                    Toolbox.ShowFeedback('feedbackContainer', 'error', 'Unexpected error');
+                    Toolbox.ShowFeedback('feedbackContainer', 'error', 'Error al cargar Tags');
                 }
             }
-            Toolbox.StopLoader();
-        });
-    },
-    LoadGeneticas: function () {
-        Toolbox.ShowLoader();
-
-        $.ajax({
-            dataType: 'json',
-            type: "POST",
-            url: "proc/controller.php",
-            data: {func: "get_lista_geneticas"}
-        }).done(function (data) {
-            if (data && !data.error) {
-                Socio.Geneticas = {};
-                $('#socioIngresarEntregaVariedad').html("");
-                for (var i = 0; i < data.length; i++) {
-                    Socio.Geneticas[data[i].id] = data[i];
-
-                    //load macroentregas_select
-                    $('#socioIngresarEntregaVariedad').append('<option value="' + data[i].id + '">' + data[i].nombre + '</option>');
-
-                }
-            }
-            Socio.LoadEntregas();
             Toolbox.StopLoader();
         });
     },
@@ -70,6 +46,7 @@ var Socio = {
         $("#socioBtnSalvarContainer").css('display', 'block');
         $('#socioDatosValorNumero').html('<input id="socioNuevoNumero" type="text">');
         $('#socioDatosValorEmail').html('<input id="socioNuevoEmail" type="text">');
+        $('#socioDatosValorDireccion').html('<input id="socioNuevoDireccion" type="text">');
         $('#socioDatosValorDocumento').html('<input id="socioNuevoDocumento" type="text">');
         $('#socioDatosValorNombre').html('<input id="socioNuevoNombre" type="text">');
         $('#socioDatosValorTelefono').html('<input id="socioNuevoTelefono" type="text">');
@@ -101,6 +78,7 @@ var Socio = {
                     numero: $('#socioNuevoNumero').val(),
                     nombre: $('#socioNuevoNombre').val(),
                     documento: $('#socioNuevoDocumento').val(),
+                    direccion: $('#socioNuevoDireccion').val(),
                     email: $('#socioNuevoEmail').val(),
                     telefono: $('#socioNuevoTelefono').val(),
                     fecha_inicio: Toolbox.DataToMysqlDate($('#socioNuevoFechaInicio').val()),
@@ -114,6 +92,7 @@ var Socio = {
                     numero: $('#socioNuevoNumero').val(),
                     nombre: $('#socioNuevoNombre').val(),
                     documento: $('#socioNuevoDocumento').val(),
+                    direccion: $('#socioNuevoDireccion').val(),
                     email: $('#socioNuevoEmail').val(),
                     telefono: $('#socioNuevoTelefono').val(),
                     fecha_inicio: Toolbox.DataToMysqlDate($('#socioNuevoFechaInicio').val()),
@@ -191,21 +170,22 @@ var Socio = {
             if (data && !data.error) {
                 Socio.SocioData = data;
 
-                $('#socioLabelEstado').removeClass('labelEstadoActivo');
-                $('#socioLabelEstado').removeClass('labelEstadoSuspendido');
+                $('#socioLabelEstado').removeClass('badge-success');
+                $('#socioLabelEstado').removeClass('badge-danger');
                 if (data.activo == true) {
-                    $('#socioLabelEstado').addClass('labelEstadoActivo');
+                    $('#socioLabelEstado').addClass('badge-success');
                     $('#socioLabelEstado').html("Activo");
                 } else {
-                    $('#socioLabelEstado').addClass('labelEstadoSuspendido');
+                    $('#socioLabelEstado').addClass('badge-danger');
                     $('#socioLabelEstado').html("Suspendido");
                 }
 
                 $("#socioDatosFieldNombre").css('display', 'none');
                 $("#socioBtnSalvarContainer").css('display', 'none');
-                $("#socioNombreTitulo").html(data.nombre + '<i class="icon-edit socioIconBtnTitle" onClick="Socio.EditSocio();" title="Editar socio"></i><i class="icon-eye-open socioIconBtnTitle" onClick="Socio.OpenSocioView();" title="Vista de socio"></i>');
+                $("#socioNombreTitulo").html(data.nombre + '<i class="fas fa-pencil-alt socioIconBtnTitle" onClick="Socio.EditSocio();" title="Editar socio"></i><i class="fas fa-user-circle socioIconBtnTitle" onClick="Socio.OpenSocioView();" title="Vista de socio"></i>');
                 $("#socioDatosValorNumero").html('<p>' + data.numero + "</p>");
                 $("#socioDatosValorDocumento").html('<p>' + data.documento + "</p>");
+                $("#socioDatosValorDireccion").html('<p>' + data.direccion + "</p>");
                 $("#socioDatosValorEmail").html('<p>' + data.email + "</p>");
                 $("#socioDatosValorFechaInicio").html('<p>' + Toolbox.MysqlDateToDate(data.fecha_inicio) + "</p>");
                 $("#socioDatosValorFechaNacimiento").html('<p>' + Toolbox.MysqlDateToDate(data.fecha_nacimiento) + "</p>");
@@ -221,7 +201,7 @@ var Socio = {
                     }
                 }
                 $("#socioDatosValorTags").html(tagsHtml + "</div>");
-
+                $('.row_empresa').css("display",'none');
 
             } else {
                 if (data && data.error) {
@@ -236,22 +216,26 @@ var Socio = {
     EditSocio: function () {
         Socio.Editing = true;
         $('#socioNombreTitulo').html(Socio.SocioData.nombre);
+        $('.row_empresa').css("display",'table-row');
         $("#socioDatosFieldNombre").css('display', 'block');
         $("#socioBtnSalvarContainer").css('display', 'block');
         $('#socioDatosValorNumero').html('<input id="socioNuevoNumero" type="text" value="' + Socio.SocioData.numero + '">');
         $('#socioDatosValorEmail').html('<input id="socioNuevoEmail" type="text" value="' + Socio.SocioData.email + '">');
         $('#socioDatosValorDocumento').html('<input id="socioNuevoDocumento" type="text" value="' + Socio.SocioData.documento + '">');
+        $('#socioDatosValorDireccion').html('<input id="socioNuevoDireccion" type="text" value="' + Socio.SocioData.direccion + '">');
         $('#socioDatosValorNombre').html('<input id="socioNuevoNombre" type="text" value="' + Socio.SocioData.nombre + '">');
         $('#socioDatosValorTelefono').html('<input id="socioNuevoTelefono" type="text" value="' + Socio.SocioData.telefono + '">');
         $('#socioDatosValorFechaInicio').html('<input id="socioNuevoFechaInicio" type="text"  placeholder="01/12/2013" value="' + Toolbox.MysqlDateToDate(Socio.SocioData.fecha_inicio) + '">');
         $('#socioDatosValorFechaNacimiento').html('<input id="socioNuevoFechaNacimiento" type="text"  placeholder="01/12/2013" value="' + Toolbox.MysqlDateToDate(Socio.SocioData.fecha_nacimiento) + '">');
         $('#socioDatosValorTags').html('');
-        $.each(Socio.Tags, function (index, value) {
-            $('#socioDatosValorTags').append('<label><input type="checkbox" id="socioNuevoTagChk_' + value.id + '" class="socioNuevoTagChk" name="' + value.id + '"/>' + value.nombre + '</label>');
-        });
-        $.each(Socio.SocioData.tags, function (index, value) {
-            $('#socioNuevoTagChk_' + value).attr('checked', 'checked');
-        });
+        if(Socio.Tags) {
+            $.each(Socio.Tags, function (index, value) {
+                $('#socioDatosValorTags').append('<label><input type="checkbox" id="socioNuevoTagChk_' + value.id + '" class="socioNuevoTagChk" name="' + value.id + '"/>' + value.nombre + '</label>');
+            });
+            $.each(Socio.SocioData.tags, function (index, value) {
+                $('#socioNuevoTagChk_' + value).attr('checked', 'checked');
+            });
+        }
         $('#socioDatosValorObservaciones').html('<textarea id="socioNuevoObservaciones">' + Socio.SocioData.observaciones + '</textarea>');
         $("#socioNuevoFechaInicio").mask("99/99/9999");
         $("#socioNuevoFechaNacimiento").mask("99/99/9999");
@@ -545,130 +529,6 @@ var Socio = {
                         Toolbox.ShowFeedback('feedbackContainerModalCambiarEstado', 'error', data.error);
                     } else {
                         Toolbox.ShowFeedback('feedbackContainerModalCambiarEstado', 'error', 'Unexpected error');
-                    }
-                }
-                Toolbox.StopLoader();
-            });
-        }
-    },
-    OpenModalNuevaEntrega: function () {
-        $('.feedbackContainerModal').css('display', 'none');
-        $('#socioIngresarEntregaGramos').val('');
-        $('#socioIngresarEntregaFecha').val(Toolbox.GetFechaHoyLocal());
-        $('#socioIngresarEntregaVariedad').val('');
-        $('#socioIngresarEntregaNotas').val('');
-        $('.loaderModal').css('display', 'none');
-        $('#socioIngresarEntregaModal').modal('show');
-        $('#socioIngresarPagoDescuento').val(0);
-    },
-    IngresarEntrega: function () {
-        if (Socio.VerificarNuevaEntrega()) {
-            Toolbox.ShowLoaderModal();
-            $.ajax({
-                dataType: 'json',
-                type: "POST",
-                url: "proc/controller.php",
-                data: {
-                    func: "ingresar_entrega",
-                    id_socio: Socio.IdSocio,
-                    gramos: $("#socioIngresarEntregaGramos").val(),
-                    fecha: Toolbox.DataToMysqlDate($("#socioIngresarEntregaFecha").val()),
-                    variedad: $("#socioIngresarEntregaVariedad").val(),
-                    notas: $("#socioIngresarEntregaNotas").val()
-                }
-            }).done(function (data) {
-                if (data && !data.error) {
-                    Socio.LoadEntregas();
-                    $('#socioIngresarEntregaModal').modal('hide');
-                } else {
-                    if (data && data.error) {
-                        Toolbox.ShowFeedback('socioIngresarEntregaModalFeedback', 'error', data.error);
-                    } else {
-                        Toolbox.ShowFeedback('socioIngresarEntregaModalFeedback', 'error', 'Error Inesperado');
-                    }
-                }
-                Toolbox.StopLoaderModal();
-            });
-        }
-    },
-    VerificarNuevaEntrega: function () {
-        var error = undefined;
-
-
-        if (!error && $('#socioIngresarEntregaGramos').val() == '') {
-            error = 'Falt&oacute; especificar la cantidad de gramos';
-        } else if (!error && $('#socioIngresarEntregaFecha').val() == '') {
-            error = 'Falto especificar fecha de entrega';
-        } else if (!error && isNaN($('#socioIngresarEntregaGramos').val())) {
-            error = 'Gramos invalidos';
-        } else if (!error && $('#socioIngresarEntregaVariedad').val() == '') {
-            error = 'Falto especificar la variedad';
-        }
-
-        if (error == undefined) {
-            Toolbox.ShowFeedback('socioIngresarEntregaModalFeedback', '', '');
-        }
-        else {
-            Toolbox.ShowFeedback('socioIngresarEntregaModalFeedback', 'error', error);
-        }
-
-        return error == undefined;
-    },
-    LoadEntregas: function () {
-        Toolbox.ShowLoader();
-        $.ajax({
-            dataType: 'json',
-            type: "POST",
-            url: "proc/controller.php",
-            data: {func: "get_entregas_socio", id_socio: Socio.IdSocio}
-        }).done(function (data) {
-            if (data && !data.error) {
-
-                $('#listaEntregasSocioTabla').html("");
-                for (var i = 0; i < data.length; i++) {
-
-                    var genetica = Socio.Geneticas[data[i].id_genetica];
-                    if (genetica) {
-                        genetica = genetica.nombre;
-                    } else {
-                        genetica = "";
-                    }
-
-                    $('#listaEntregasSocioTabla').append('<tr onClick=""><td>' + data[i].gramos + '</td>' +
-                        '<td>' + Toolbox.MysqlDateToDate(data[i].fecha) + '</td>' +
-                            //'<td>' + Toolbox.TransformSpecialTag(genetica) + '</td>' +
-                        '<td>' + data[i].notas + '</td>' +
-                        '<td><a href="#" onclick="Socio.CancelarEntrega(\'' + data[i].id + '\');return false;">borrar</a></td></tr>');
-                }
-
-            } else {
-                if (data && data.error) {
-                    Toolbox.ShowFeedback('feedbackContainer', 'error', data.error);
-                } else {
-                    Toolbox.ShowFeedback('feedbackContainer', 'error', 'Error inesperado');
-                }
-            }
-            Toolbox.StopLoader();
-        });
-    },
-    CancelarEntrega: function (id) {
-        if (confirm("Cancelar entrega?")) {
-            Toolbox.ShowLoader();
-            $.ajax({
-                dataType: 'json',
-                type: "POST",
-                url: "proc/controller.php",
-                data: {func: "cancelar_entrega", id: id}
-            }).done(function (data) {
-                if (data && !data.error) {
-
-                    Socio.LoadEntregas();
-
-                } else {
-                    if (data && data.error) {
-                        Toolbox.ShowFeedback('feedbackContainer', 'error', data.error);
-                    } else {
-                        Toolbox.ShowFeedback('feedbackContainer', 'error', 'Error al cancelar entrega.');
                     }
                 }
                 Toolbox.StopLoader();
@@ -991,8 +851,6 @@ $(document).ready(function () {
     }
     Socio.GetTags();
 
-
-    $('#socioIngresarPagoModalBtnIngresar').on('click', Socio.IngresarPago);
     $("#socioIngresarPagoFecha").mask("99/99/9999");
     $('#socioLabelEstado').on('click', function () {
         $('.feedbackContainerModal').css('display', 'none');
@@ -1022,7 +880,6 @@ $(document).ready(function () {
     $('#socioNuevoTalonCobrosYAYear').val(today.getFullYear());
 
     Socio.GetCuotaCostos();
-    Socio.GetDeudas();
-    Socio.LoadGeneticas();
-    Socio.GetFacturasPendientes();
+    //Socio.GetDeudas();
+    //Socio.GetFacturasPendientes();
 });

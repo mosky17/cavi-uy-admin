@@ -1,59 +1,89 @@
 <?php
 
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
+
 require_once(dirname(__FILE__) . '/auth.php');
 require_once(dirname(__FILE__) . '/log.php');
-require_once(dirname(__FILE__) . '/mandrill.php');
 
 Auth::connect();
 
 class Socio
 {
-
-    public $fecha_inicio;
-    public $email;
-    public $documento;
+    public $id;
     public $numero;
     public $nombre;
+    public $documento;
+    public $email;
+    public $fecha_inicio;
+    public $fecha_nacimiento;
     public $tags;
-    public $id;
     public $telefono;
     public $observaciones;
     public $activo;
-    public $fecha_nacimiento;
-    public $direccion;
     public $hash;
+    public $direccion;
+    public $balance_efectivo;
 
-    function __construct($_id, $_nombre, $_fecha_inicio, $_email, $_documento,
-                         $_telefono, $_tags, $_numero, $_observaciones, $activo,
-                         $fecha_nacimiento, $direccion, $hash)
+
+    function __construct($_id,
+                         $_numero,
+                         $_nombre,
+                         $_documento,
+                         $_email,
+                         $_fecha_inicio,
+                         $_fecha_nacimiento,
+                         $_tags,
+                         $_telefono,
+                         $_observaciones,
+                         $_activo,
+                         $_hash,
+                         $_direccion,
+                         $_balance_efectivo
+    )
     {
-
         $this->id = $_id;
-        $this->nombre = $_nombre;
-        $this->fecha_inicio = $_fecha_inicio;
-        $this->email = $_email;
-        $this->documento = $_documento;
-        $this->telefono = $_telefono;
-        $this->tags = $_tags;
         $this->numero = $_numero;
+        $this->nombre = $_nombre;
+        $this->documento = $_documento;
+        $this->email = $_email;
+        $this->fecha_inicio = $_fecha_inicio;
+        $this->fecha_nacimiento = $_fecha_nacimiento;
+        $this->tags = $_tags;
+        $this->telefono = $_telefono;
         $this->observaciones = $_observaciones;
-        $this->activo = $activo;
-        $this->fecha_nacimiento = $fecha_nacimiento;
-        $this->direccion = $direccion;
-        $this->hash = $hash;
-
+        $this->activo = $_activo;
+        $this->hash = $_hash;
+        $this->direccion = $_direccion;
+        $this->balance_efectivo = $_balance_efectivo;
     }
 
     static private function mysql_to_instances($result)
     {
         $return = array();
         if ($result) {
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $tags = explode(",", $row['tags']);
 
-                $instance = new Socio($row['id'], $row['nombre'], $row['fecha_inicio'], $row['email'],
-                    $row['documento'], $row['telefono'], $tags, $row['numero'], $row['observaciones'],
-                    $row['activo'], $row['fecha_nacimiento'], $row['direccion'], $row['hash']);
+                $instance = new Socio(
+                    $row['id'],
+                    $row['numero'],
+                    $row['nombre'],
+                    $row['documento'],
+                    $row['email'],
+                    $row['fecha_inicio'],
+                    $row['fecha_nacimiento'],
+                    $tags,
+                    $row['telefono'],
+                    $row['observaciones'],
+                    $row['activo'],
+                    $row['hash'],
+                    $row['direccion'],
+                    $row['balance_efectivo']
+                );
+
                 $return[] = $instance;
             }
         }
@@ -62,25 +92,25 @@ class Socio
 
     static public function get_lista_socios()
     {
-        $q = mysql_query("SELECT * FROM socios ORDER BY numero;");
+        $q=Auth::$mysqli->query("SELECT * FROM socios ORDER BY numero;");
         return Socio::mysql_to_instances($q);
     }
 
     static public function get_socios_activos()
     {
-        $q = mysql_query("SELECT * FROM socios WHERE activo=1 ORDER BY numero;");
+        $q=Auth::$mysqli->query("SELECT * FROM socios WHERE activo=1 ORDER BY numero;");
         return Socio::mysql_to_instances($q);
     }
 
     static public function get_socios_suspendidos()
     {
-        $q = mysql_query("SELECT * FROM socios WHERE activo=0 ORDER BY numero;");
+        $q=Auth::$mysqli->query("SELECT * FROM socios WHERE activo=0 ORDER BY numero;");
         return Socio::mysql_to_instances($q);
     }
 
     static public function get_socio($id)
     {
-        $q = mysql_query("SELECT * FROM socios WHERE id = " . $id . ";");
+        $q=Auth::$mysqli->query("SELECT * FROM socios WHERE id = " . $id . ";");
         $result = Socio::mysql_to_instances($q);
         if (count($result) == 1) {
             return $result[0];
@@ -91,7 +121,7 @@ class Socio
 
     static public function get_socio_hash($hash)
     {
-        $q = mysql_query("SELECT * FROM socios WHERE hash = '" . $hash . "';");
+        $q=Auth::$mysqli->query("SELECT * FROM socios WHERE hash = '" . $hash . "';");
         $result = Socio::mysql_to_instances($q);
         if (count($result) == 1) {
             return $result[0];
@@ -102,19 +132,30 @@ class Socio
 
     static public function get_tags()
     {
-        $q = mysql_query("SELECT * FROM tags ORDER BY id;");
+        $q=Auth::$mysqli->query("SELECT * FROM tags ORDER BY id;");
         $return = array();
-        while ($row = mysql_fetch_array($q)) {
+        while ($row = mysqli_fetch_array($q)) {
             $return[] = array("id" => $row['id'], "nombre" => $row['nombre'], "color" => $row['color']);
         }
         return $return;
     }
 
-    static public function create_socio($numero, $nombre, $documento, $email, $fecha_inicio, $tags, $telefono, $observaciones, $fecha_nacimiento)
+    static public function create_socio(
+        $numero,
+        $nombre,
+        $documento,
+        $email,
+        $fecha_inicio,
+        $tags,
+        $telefono,
+        $observaciones,
+        $fecha_nacimiento,
+        $direccion
+    )
     {
 
         //check number
-        $q = mysql_query("SELECT * FROM socios WHERE numero=" . $numero);
+        $q=Auth::$mysqli->query("SELECT * FROM socios WHERE numero=" . $numero);
         $sociosIgualNumero = Socio::mysql_to_instances($q);
         if ($sociosIgualNumero && count($sociosIgualNumero) > 0) {
             return array("error" => "Numero de socio ya existente");
@@ -126,25 +167,42 @@ class Socio
         }
         $tagString = rtrim($tagString, ",");
 
-        $q = mysql_query("INSERT INTO socios (id, numero, nombre, documento, email, fecha_inicio, tags, telefono, observaciones, fecha_nacimiento) VALUES (" .
-        "null, " . htmlspecialchars(mysql_real_escape_string($numero)) . ", '" . htmlspecialchars(mysql_real_escape_string($nombre)) . "', '" .
-        htmlspecialchars(mysql_real_escape_string($documento)) . "', '" . htmlspecialchars(mysql_real_escape_string($email)) . "', '" .
-        htmlspecialchars(mysql_real_escape_string($fecha_inicio)) . "', '" . htmlspecialchars(mysql_real_escape_string($tagString)) . "', '" .
-        htmlspecialchars(mysql_real_escape_string($telefono)) . "', '" . htmlspecialchars(mysql_real_escape_string($observaciones)) . "', '" .
-        htmlspecialchars(mysql_real_escape_string($fecha_nacimiento)) . "');");
+        $q=Auth::$mysqli->query("INSERT INTO socios (id, numero, nombre, documento, email, fecha_inicio, tags, telefono, observaciones, fecha_nacimiento, direccion) VALUES (" .
+            "null, " .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$numero)) . ", '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$nombre)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$documento)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$email)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_inicio)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tagString)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$telefono)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$observaciones)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_nacimiento)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$direccion)) .
+            "');");
 
-        if (mysql_affected_rows() == 1) {
-            return mysql_insert_id();
+        if (Auth::$mysqli->affected_rows == 1) {
+            return Auth::$mysqli->insert_id;
         } else {
             return array("error" => "Error al crear socio");
         }
     }
 
-    static public function update_socio($id, $numero, $nombre, $documento, $email, $fecha_inicio, $tags, $telefono, $observaciones, $fecha_nacimiento)
-    {
+    static public function update_socio($id, 
+                                        $numero, 
+                                        $nombre, 
+                                        $documento, 
+                                        $email, 
+                                        $fecha_inicio, 
+                                        $tags, 
+                                        $telefono, 
+                                        $observaciones, 
+                                        $fecha_nacimiento,
+                                        $direccion
+    ){
 
         //check number
-        $q = mysql_query("SELECT * FROM socios WHERE numero=" . $numero);
+        $q=Auth::$mysqli->query("SELECT * FROM socios WHERE numero=" . $numero);
         $sociosIgualNumero = Socio::mysql_to_instances($q);
         if (count($sociosIgualNumero) > 1 || (count($sociosIgualNumero) == 1 && $sociosIgualNumero[0]->id != $id)) {
             return array("error" => "Numero de socio ya existente");
@@ -156,17 +214,18 @@ class Socio
         }
         $tagString = rtrim($tagString, ",");
 
-        $q = mysql_query("UPDATE socios SET numero=" . htmlspecialchars(mysql_real_escape_string($numero)) .
-        ", nombre='" . htmlspecialchars(mysql_real_escape_string($nombre)) .
-        "', documento='" . htmlspecialchars(mysql_real_escape_string($documento)) .
-        "', email='" . htmlspecialchars(mysql_real_escape_string($email)) .
-        "', fecha_inicio='" . htmlspecialchars(mysql_real_escape_string($fecha_inicio)) .
-        "', tags='" . htmlspecialchars(mysql_real_escape_string($tagString)) .
-        "', telefono='" . htmlspecialchars(mysql_real_escape_string($telefono)) .
-        "', fecha_nacimiento='" . htmlspecialchars(mysql_real_escape_string($fecha_nacimiento)) .
-        "', observaciones='" . htmlspecialchars(mysql_real_escape_string($observaciones)) . "' WHERE id=" . $id);
+        $q=Auth::$mysqli->query("UPDATE socios SET numero=" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$numero)) .
+            ", nombre='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$nombre)) .
+            "', documento='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$documento)) .
+            "', email='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$email)) .
+            "', fecha_inicio='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_inicio)) .
+            "', tags='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tagString)) .
+            "', telefono='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$telefono)) .
+            "', fecha_nacimiento='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_nacimiento)) .
+            "', direccion='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$direccion)) .
+            "', observaciones='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$observaciones)) . "' WHERE id=" . $id);
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             Log::log("Editar Socio", "Socio #" . $id . " " . $nombre . " editado");
             return $id;
         } else {
@@ -174,31 +233,13 @@ class Socio
         }
     }
 
-    static public function importar_socio_aecu($numero)
+    static public function update_estado_socio($id, $estado)
     {
-        Auth::connectAECU();
-        $q = mysql_query("SELECT * FROM Personas p LEFT JOIN `Socios Pagos` sp ON p.Id=sp.Id_Persona WHERE sp.Numero_Socio=" . $numero);
+        $q=Auth::$mysqli->query("UPDATE socios SET activo=" . $estado . " WHERE id=" . $id);
 
-        if (mysql_num_rows($q) == 1) {
-            Auth::connect();
-            $row = mysql_fetch_array($q);
-            return Socio::create_socio($row['Numero_Socio'], $row['Nombre'], $row['Documento'], $row['Email'], date('Y-m-d'), "", $row['Telefono'], "", $row['Fecha_Nacimiento']);
-        } elseif (mysql_num_rows($q) == 0) {
-            Auth::connect();
-            return array("error" => "Socio no encontrado");
-        } else {
-            Auth::connect();
-            return array("error" => "CRITICO: Socio duplicado!");
-        }
-    }
-
-    static public function update_estado_socio($id,$estado)
-    {
-        $q = mysql_query("UPDATE socios SET activo=" . $estado . " WHERE id=" . $id);
-
-        if (mysql_affected_rows() == 1) {
+        if (Auth::$mysqli->affected_rows == 1) {
             return true;
-        }else{
+        } else {
             return array("error" => "Socio no actualizado");
         }
     }
@@ -206,31 +247,31 @@ class Socio
     static public function eliminar_socio($id)
     {
         //check si no tiene pagos
-        $q = mysql_query("SELECT * FROM pagos WHERE id_socio=" . $id . " AND cancelado=0");
-        if(mysql_num_rows($q) > 0){
+        $q=Auth::$mysqli->query("SELECT * FROM pagos WHERE id_socio=" . $id . " AND cancelado=0");
+        if ($q->num_rows > 0) {
             return array("error" => "Imposible eliminar, socio tiene pagos a su nombre");
-        }else{
-            $q = mysql_query("DELETE FROM socios WHERE id=" . $id);
+        } else {
+            $q=Auth::$mysqli->query("DELETE FROM socios WHERE id=" . $id);
         }
 
-        if (mysql_affected_rows() == 1) {
+        if (Auth::$mysqli->affected_rows == 1) {
             return true;
-        }else{
+        } else {
             return array("error" => "Socio no eliminado");
         }
     }
 
-    static public function get_lista_mails($all,$tags)
+    static public function get_lista_mails($all, $tags)
     {
-        if($all == 'true'){
-            $q = mysql_query("SELECT * FROM socios WHERE activo=1");
-        }else{
+        if ($all == 'true') {
+            $q=Auth::$mysqli->query("SELECT * FROM socios WHERE activo=1");
+        } else {
 
             $and = "";
-            if($tags && count($tags) > 0){
+            if ($tags && count($tags) > 0) {
                 $and .= " AND (";
-                for($i=0;$i<count($tags);$i++){
-                    if($i > 0){
+                for ($i = 0; $i < count($tags); $i++) {
+                    if ($i > 0) {
                         $and .= " OR ";
                     }
                     $and .= "tags like '" . $tags[$i] . ",%'";
@@ -240,85 +281,19 @@ class Socio
                 }
                 $and .= ")";
             }
-            $q = mysql_query("SELECT * FROM socios WHERE activo=1" . $and);
+            $q=Auth::$mysqli->query("SELECT * FROM socios WHERE activo=1" . $and);
         }
 
         //echo "SELECT * FROM socios WHERE cancelado=0" . $and;
         return Socio::mysql_to_instances($q);
     }
 
-    static public function send_estados_de_cuenta($total,$texto){
+    public function generate_hash()
+    {
 
-        /*
+        $q=Auth::$mysqli->query("UPDATE socios SET hash=CONCAT(MD5('" . $this->id . $this->numero . $this->documento . $this->telefono . "secreto'), UNIX_TIMESTAMP()) WHERE id=" . $this->id);
 
-        $socios = Socio::get_socios_activos();
-
-
-        for($i=0;$i<count($socios);$i++){
-
-            $htmlStyles = '<style type="text/css">.pagos-table{text-align: left;border-spacing:0;}' .
-                '.pagos-table td{padding:5px 10px 5px 0;border:1px solid #EEE;}' .
-                '.pagos-table th{padding:5px 10px 5px 0;border:1px solid #EEE;}' .
-                '.titulo1{margin:0px;color:#888;}</style>';
-
-            //texto inicial
-            $htmlInicial = '<h2>Estado de cuenta de tu Club Social de Cannabis</h2><br>';
-            $saltos = array("\r\n", "\n", "\r");
-            $replace = '<br />';
-            $newstr = str_replace($saltos, $replace, $texto);
-            $htmlInicial .= '<p>'.$newstr.'</p>';
-
-            $queryPagos = mysql_query("SELECT * FROM pagos WHERE id_socio = ".$socios[$i]->id." AND cancelado=0 ORDER BY fecha_pago");
-
-            //armar total debe html
-            $totalPago = 0;
-            for($j=0;$j<mysql_num_rows($queryPagos);$j++){
-                $totalPago += mysql_result($queryPagos,$j,'valor');
-            }
-            $htmlTotalDebido = "";
-            if($totalPago < $total){
-                $htmlTotalDebido = '<h4 style="color:red;">Tu saldo de cuenta es negativo, estas debiendo $'.($total-$totalPago).'</h4>';
-            }elseif($totalPago > $total){
-                $htmlTotalDebido = '<h4 style="color:green;">Tu saldo de cuenta es positivo, tienes $'.(($total-$totalPago)*-1).' a favor.</h4>';
-            }else{
-                $htmlTotalDebido = '<h4 style="color:green;">Tu cuenta esta al d&iacute;a.</h4>';
-            }
-
-            //lista pagos
-
-            $htmlPagos = "<h4 class='titulo1'>Historial de Pagos</h4><table class='pagos-table'><tr><th>Fecha</th><th>Valor ($)</th><th>Raz&oacute;n</th><th>Via</th></tr>";
-            for($j=0;$j<mysql_num_rows($queryPagos);$j++){
-
-                $fecha = explode('-',mysql_result($queryPagos,$j,'fecha_pago'));
-                $fecha = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
-
-                $htmlPagos .= '<tr><td>'.$fecha.'</td>'.
-                    '<td>'.mysql_result($queryPagos,$j,'valor').'</td>'.
-                    '<td>'.mysql_result($queryPagos,$j,'razon').'</td>'.
-                    '<td>'.mysql_result($queryPagos,$j,'tipo').'</td><tr>';
-            }
-            $htmlPagos .= '</table><br><br>';
-
-            $htmlFirma = 'Cualquier duda o consulta nos responden este correo.<p style="margin:10px 0 0 0;">Saludos,</p><p style="margin:0;">Martin</p>';
-
-            $htmlFinal = $htmlStyles . $htmlInicial . $htmlTotalDebido . $htmlPagos . $htmlFirma;
-
-            $to = array(array("email"=>$socios[$i]->email));
-            //$to = array(array("email"=>"martin.gaibisso@gmail.com"));
-            Mandrill::SendDefault("",$htmlFinal,"Estado de cuenta de mi Club Social de Cannabis",$to,array("Estado de Cuenta CSC"));
-
-
-        }
-
-        */
-
-    }
-
-    public function generate_hash(){
-
-        $q = mysql_query("UPDATE socios SET hash=CONCAT(MD5('" . $this->id . $this->numero . $this->documento . $this->telefono. "secreto'), UNIX_TIMESTAMP()) WHERE id=" . $this->id);
-
-        if (mysql_affected_rows() == 1) {
+        if (Auth::$mysqli->affected_rows == 1) {
             $socioAgain = Socio::get_socio($this->id);
             return $socioAgain->hash;
         } else {
@@ -326,11 +301,12 @@ class Socio
         }
     }
 
-    public function has_tag($tag_id){
+    public function has_tag($tag_id)
+    {
 
-        for($i=0;$i<count($this->tags);$i++) {
+        for ($i = 0; $i < count($this->tags); $i++) {
 
-            if ((int) $this->tags[$i] == (int) $tag_id) {
+            if ((int)$this->tags[$i] == (int)$tag_id) {
                 return true;
             }
         }

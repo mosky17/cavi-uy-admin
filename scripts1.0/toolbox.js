@@ -20,9 +20,11 @@ var Toolbox = {
         return vars;
     },
     UpdateActiveNavbar: function (active) {
-        $('#headerNavigation').css('display','block');
-        $('.nav_lista_link').removeClass('active');
-        $('#' + active).addClass('active');
+            $('#headerNavigation').css('display', 'block');
+            $('.nav_lista_link').removeClass('active');
+        if(active && active != "") {
+            $('#' + active).addClass('active');
+        }
     },
     ShowLoader: function () {
         Toolbox.LoaderQueue += 1;

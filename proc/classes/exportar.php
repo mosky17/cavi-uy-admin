@@ -1,10 +1,7 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: Martin
- * Date: 02/08/13
- * Time: 09:52 PM
- * To change this template use File | Settings | File Templates.
+ * Coded by Mosky
+ * https://github.com/mosky17
  */
 
 require_once(dirname(__FILE__) . '/auth.php');
@@ -30,7 +27,7 @@ class Exportar {
         //$array[] =  array($result, "SELECT * FROM pagos p, socios s WHERE p.id_socio = s.id AND p.cancelado=0 ORDER BY p.fecha_pago GROUP BY p.id");
 
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $array[] = array(round($row['valor']), $row['fecha_pago'], $row['razon'], $row['tipo'], $row['numero'],
                     Exportar::sacarTildes($row['nombre']), $row['email'], '"'.Exportar::sacarTildes($row['notas']).'"');
             }
@@ -63,7 +60,7 @@ class Exportar {
         $arrayPorSocio = array();
 
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 if($arrayPorSocio[$row['numero']]){
                     $arrayPorSocio[$row['numero']]['cantidad'] += round($row['valor']);
                 }else{
@@ -95,7 +92,7 @@ class Exportar {
         $resultPagos = mysql_query("SELECT * FROM pagos p, socios s WHERE p.id_socio = s.id AND p.cancelado=0 ORDER BY p.fecha_pago");
 
         $indexGastos = 0;
-        $rowResultPagos = mysql_fetch_array($resultPagos);
+        $rowResultPagos = mysqli_fetch_array($resultPagos);
         $saldo = 0;
 
         while($indexGastos < count($gastos) || $rowResultPagos){
@@ -117,13 +114,13 @@ class Exportar {
                     $saldo += round($rowResultPagos['valor']);
                     $array[] = array($rowResultPagos['fecha_pago'], Exportar::sacarTildes($rowResultPagos['razon']), $rowResultPagos['numero'],
                         Exportar::sacarTildes($rowResultPagos['nombre']), round($rowResultPagos['valor']), "", $saldo , '"'.Exportar::sacarTildes($rowResultPagos['notas']).'"');
-                    $rowResultPagos = mysql_fetch_array($resultPagos);
+                    $rowResultPagos = mysqli_fetch_array($resultPagos);
                 }
             }elseif($rowResultPagos){
                 $saldo += round($rowResultPagos['valor']);
                 $array[] = array($rowResultPagos['fecha_pago'], Exportar::sacarTildes($rowResultPagos['razon']), $rowResultPagos['numero'],
                     Exportar::sacarTildes($rowResultPagos['nombre']), round($rowResultPagos['valor']), "", $saldo , '"'.Exportar::sacarTildes($rowResultPagos['notas']).'"');
-                $rowResultPagos = mysql_fetch_array($resultPagos);
+                $rowResultPagos = mysqli_fetch_array($resultPagos);
             }elseif($indexGastos < count($gastos)){
                 $saldo -= round($gastos[$indexGastos]->valor);
                 if($gastos[$indexGastos]->valor>0){
@@ -169,7 +166,7 @@ class Exportar {
         $result = mysql_query("SELECT * FROM pagos p, socios s WHERE s.activo=1 AND p.id_socio = s.id AND p.cancelado=0 ORDER BY s.numero");
 
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
 
                 //add socio to array
                 if(count($socios) == 0 || $socios[count($socios)-1]["numero"] < $row['numero']){
@@ -319,7 +316,7 @@ class Exportar {
         $result = mysql_query("SELECT * FROM pagos p, socios s WHERE s.activo=1 AND p.id_socio = s.id AND p.cancelado=0 ORDER BY s.numero");
 
         if($result) {
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
 
                 if(strpos($row['razon'],'mensualidad') == 0) {
 

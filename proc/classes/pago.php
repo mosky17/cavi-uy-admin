@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
+
 require_once(dirname(__FILE__) . '/auth.php');
 require_once(dirname(__FILE__) . '/dato.php');
 
@@ -19,9 +24,18 @@ class Pago
     public $descuento;
     public $descuento_json;
 
-    function __construct($id, $id_socio, $fecha_pago, $razon, $valor, $tipo, $notas, $cancelado, $descuento, $descuento_json)
-    {
-
+    function __construct(
+        $id, 
+        $id_socio, 
+        $fecha_pago, 
+        $razon, 
+        $valor, 
+        $tipo, 
+        $notas, 
+        $cancelado, 
+        $descuento, 
+        $descuento_json
+    ){
         $this->id = $id;
         $this->id_socio = $id_socio;
         $this->fecha_pago = $fecha_pago;
@@ -38,7 +52,7 @@ class Pago
     {
         $return = array();
         if ($result) {
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $instance = new Pago($row['id'], $row['id_socio'], $row['fecha_pago'], $row['razon'], $row['valor'], $row['tipo'],
                     $row['notas'], $row['cancelado'], $row['descuento'], $row['descuento_json']);
                 $return[] = $instance;
@@ -49,7 +63,7 @@ class Pago
 
     static public function get_pago($id)
     {
-        $q = mysql_query("SELECT * FROM pagos WHERE id=" . $id);
+        $q=Auth::$mysqli->query("SELECT * FROM pagos WHERE id=" . $id);
         $result = Pago::mysql_to_instances($q);
         if (count($result) == 1) {
             return $result[0];
@@ -65,8 +79,8 @@ class Pago
             return array("error" => "Caja cerrada! No se pueden alterar movimientos de esta fecha.");
         }
 
-        $q = mysql_query("UPDATE pagos SET cancelado=1 WHERE id=" . $id);
-        if (mysql_affected_rows() == 1) {
+        $q=Auth::$mysqli->query("UPDATE pagos SET cancelado=1 WHERE id=" . $id);
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Pago no cancelado");
@@ -80,9 +94,9 @@ class Pago
             return array("error" => "Caja cerrada! No se pueden alterar movimientos de esta fecha.");
         }
 
-        $q = mysql_query("UPDATE pagos SET razon='".$razon."', descuento='".$descuento."', descuento_json='".$descuento_json."' WHERE id=" . $id);
+        $q=Auth::$mysqli->query("UPDATE pagos SET razon='".$razon."', descuento='".$descuento."', descuento_json='".$descuento_json."' WHERE id=" . $id);
         //echo "UPDATE pagos SET razon='".$razon."', descuento='".$descuento."', descuento_json='".$descuento_json."' WHERE id=" . $id;
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Pago no modificado");
@@ -93,19 +107,19 @@ class Pago
 
     static public function get_pagos_socio($id_socio)
     {
-        $q = mysql_query("SELECT * FROM pagos WHERE id_socio=" . $id_socio . " AND cancelado=0 ORDER BY fecha_pago DESC;");
+        $q=Auth::$mysqli->query("SELECT * FROM pagos WHERE id_socio=" . $id_socio . " AND cancelado=0 ORDER BY fecha_pago DESC;");
         return Pago::mysql_to_instances($q);
     }
 
     static public function get_lista_pagos()
     {
-        $q = mysql_query("SELECT * FROM pagos WHERE cancelado=0 ORDER BY fecha_pago DESC;");
+        $q=Auth::$mysqli->query("SELECT * FROM pagos WHERE cancelado=0 ORDER BY fecha_pago DESC;");
         return Pago::mysql_to_instances($q);
     }
 
     static public function get_lista_pagos_con_cancelados()
     {
-        $q = mysql_query("SELECT * FROM pagos ORDER BY fecha_pago;");
+        $q=Auth::$mysqli->query("SELECT * FROM pagos ORDER BY fecha_pago;");
         return Pago::mysql_to_instances($q);
     }
 
@@ -116,61 +130,16 @@ class Pago
             return array("error" => "Caja cerrada! No se pueden ingresar movimientos en esta fecha.");
         }
 
-        $q = mysql_query("INSERT INTO pagos (id_socio, valor, fecha_pago, razon, descuento, descuento_json, tipo, notas) VALUES (" .
-            htmlspecialchars(mysql_real_escape_string($id_socio)) . ", '" . htmlspecialchars(mysql_real_escape_string($valor)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($fecha_pago)) . "', '" . htmlspecialchars(mysql_real_escape_string($razon)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($descuento)) . "', '" . htmlspecialchars(mysql_real_escape_string($descuento_json)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($tipo)) . "', '" . htmlspecialchars(mysql_real_escape_string($notas)) . "');");
+        $q=Auth::$mysqli->query("INSERT INTO pagos (id_socio, valor, fecha_pago, razon, descuento, descuento_json, tipo, notas) VALUES (" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$id_socio)) . ", '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$valor)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_pago)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$razon)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$descuento)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$descuento_json)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tipo)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$notas)) . "');");
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Error al ingresar pago");
-        }
-    }
-
-    static public function get_cuota_costos()
-    {
-        $result = mysql_query("SELECT * FROM cuota_costo;");
-        $cuota_costos = array();
-        if ($result) {
-            while ($row = mysql_fetch_array($result)) {
-                $cuota_costos[] = array(
-                    "id" => $row['id'],
-                    "valor" => $row['valor'],
-                    "fecha_inicio" => $row['fecha_inicio'],
-                    "fecha_fin" => $row['fecha_fin']
-                );
-            }
-        }
-        return $cuota_costos;
-    }
-
-    static public function delete_cuota_costo($id)
-    {
-        $q = mysql_query("DELETE FROM cuota_costo WHERE id=" . $id);
-        if (mysql_affected_rows() == 1) {
-            return true;
-        } else {
-            return array("error" => "Registro no borrado");
-        }
-    }
-
-    static public function ingresar_cuota_costo($valor, $fecha_inicio, $fecha_fin)
-    {
-
-        if (Dato::verificar_movimiento_caja($fecha_fin) !== true) {
-            return array("error" => "Caja cerrada! No se pueden ingresar movimientos en esta fecha.");
-        }
-
-        $q = mysql_query("INSERT INTO cuota_costo (valor, fecha_inicio, fecha_fin) VALUES (" .
-            htmlspecialchars(mysql_real_escape_string($valor)) . ", '" . htmlspecialchars(mysql_real_escape_string($fecha_inicio)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($fecha_fin)) . "');");
-
-        if (mysql_affected_rows() == 1) {
-            return true;
-        } else {
-            return array("error" => "Error al ingresar registro de costo de cuota");
         }
     }
 

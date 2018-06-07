@@ -1,10 +1,7 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: Martin
- * Date: 07/07/13
- * Time: 10:57 PM
- * To change this template use File | Settings | File Templates.
+ * Coded by Mosky
+ * https://github.com/mosky17
  */
 
 class Log {
@@ -29,7 +26,7 @@ class Log {
     {
         $return = array();
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $instance = new Log($row['id'], $row['id_admin'], $row['created_at'], $row['tag'], $row['mensaje']);
                 $return[] = $instance;
             }
@@ -39,7 +36,7 @@ class Log {
 
     static public function get_lista_logs()
     {
-        $q = mysql_query("SELECT * FROM logs ORDER BY created_at;");
+        $q=Auth::$mysqli->query("SELECT * FROM logs ORDER BY created_at;");
         return Log::mysql_to_instances($q);
     }
 
@@ -47,14 +44,14 @@ class Log {
     {
 
 
-        $q = mysql_query("INSERT INTO logs (id_admin, tag, created_at, mensaje) VALUES (" .
-        Auth::get_admin_id() . ", '" . htmlspecialchars(mysql_real_escape_string($tag)) . "', '" .
-        date('Y-m-d H:i:s') . "', '" . htmlspecialchars(mysql_real_escape_string($mensaje)) . "')");
+        $q=Auth::$mysqli->query("INSERT INTO logs (id_admin, tag, created_at, mensaje) VALUES (" .
+        Auth::get_admin_id() . ", '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tag)) . "', '" .
+        date('Y-m-d H:i:s') . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$mensaje)) . "')");
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
-            return array("error" => "Error al insertar log");
+            return array("error" => "Error al guardar log");
         }
     }
 

@@ -125,7 +125,7 @@ var ListaPagos = {
 
                                     if (!foundPayment) {
                                         inpagosData.push({
-                                            nombre: '<a href="/socio.php?id=' + ListaPagos.ListaSocios[key].id_socio + '" class="label" style="background-color:#AF002A;">#' + ListaPagos.ListaSocios[key].numero + ' ' + ListaPagos.ListaSocios[key].nombre + '</a>',
+                                            nombre: '<a href="' + GLOBAL_domain + '/socio.php?id=' + ListaPagos.ListaSocios[key].id + '" class="badge badge-primary">#' + ListaPagos.ListaSocios[key].numero + ' ' + ListaPagos.ListaSocios[key].nombre + '</a>',
                                             mes: Toolbox.NombreMesesEsp[month] + "/" + year
                                         })
                                     }
@@ -219,90 +219,25 @@ var ListaPagos = {
             });
         }
     },
-    OpenModalMacroPago: function () {
-        $('#macroPagoModal').modal('show');
-    },
-    VerificarMacroPago: function () {
-        if (confirm("Esta seguro que desea agregar este pago a todos los socios seleccionados?")) {
-            if ($('.macropago_valor').val() == "") {
-                Toolbox.ShowFeedback('macroPagoModalFeedback', 'error', 'Falt&oacute; especificar el valor del pago');
-                return false;
-            } else if (isNaN($('.macropago_valor').val())) {
-                Toolbox.ShowFeedback('macroPagoModalFeedback', 'error', 'Falto especificar fecha de pago');
-                return false;
-            } else if ($('.macropago_fecha').val() == "") {
-                Toolbox.ShowFeedback('macroPagoModalFeedback', 'error', 'Falto especificar fecha de pago');
-                return false;
-            }
-            return true;
-        } else {
-            return false;
-        }
-    },
-    AgregarMacroPago: function () {
-        if (ListaPagos.VerificarMacroPago()) {
-
-            var listaSocioIds = [];
-            $('.macropago_socio_chk').each(function () {
-                if ($(this).prop("checked") == true) {
-                    if ($(this).attr('id') != 'macropago_socio_todos') {
-                        listaSocioIds.push($(this).attr('id').substring(16));
-                    }
-                }
-            });
-
-            var razonPago = $("#macropago_razon").val();
-            if ($("#macropago_razon").val() == "mensualidad") {
-                razonPago = "mensualidad (" + $('#macropago_razonMensualidad').val() + "/" + $('#macropago_razonMensualidadAnio').val() + ")";
-            }
-
-            for (var i = 0; i < listaSocioIds.length; i++) {
-                (function (index) {
-                    Toolbox.ShowLoaderModal();
-                    $.ajax({
-                        dataType: 'json',
-                        type: "POST",
-                        url: "proc/controller.php",
-                        data: {
-                            func: "ingresar_pago",
-                            id_socio: listaSocioIds[index],
-                            valor: $(".macropago_valor").val(),
-                            fecha_pago: Toolbox.DataToMysqlDate($(".macropago_fecha").val()),
-                            razon: razonPago,
-                            notas: "",
-                            tipo: $("#macropago_tipo").val()
-                        }
-                    }).done(function (data) {
-
-                        if (index == listaSocioIds.length - 1) {
-                            ListaPagos.LoadListaPagos();
-                            $('#macroPagoModal').modal('hide');
-                            Toolbox.ShowFeedback('feedbackContainer', 'success', 'Macro pago agregado con exito');
-                        }
-                        Toolbox.StopLoaderModal();
-                    });
-                })(i);
-            }
-        }
-    },
-    MacroPagoSeleccionarTodosChanged: function () {
-        if ($('#macropago_socio_todos').prop("checked") == true) {
-            $('.macropago_socio_chk').prop("checked", true);
-        } else {
-            $('.macropago_socio_chk').prop("checked", false);
-        }
-    },
-    TogglePagoRazon: function () {
-        if ($('#macropago_razon').val() == "mensualidad") {
-            $('#macropago_razonMensualidad').css('display', 'block');
-            $('#macropago_razonMensualidadAnio').css('display', 'block');
-        } else {
-            $('#macropago_razonMensualidad').css('display', 'none');
-            $('#macropago_razonMensualidadAnio').css('display', 'none');
-        }
-    },
     VerificarNuevaCuotaCosto: function () {
-        return true;
+        var error = undefined;
+
+        if (!error && $('.nuevaCuotaCosto_fecha_fin').val() == '') {
+            error = 'Falt&oacute; especificar el valor del pago';
+        } else if (!error && $('.nuevaCuotaCosto_fecha_inicio').val() == '') {
+            error = 'Falto especificar fecha de pago';
+        } else if (!error && isNaN($('.nuevaCuotaCosto_valor').val())) {
+            error = 'Valor invalido';
+        }
+
+        if (error == undefined) {
+            Toolbox.ShowFeedback('nuevaCuotaCostoModalFeedback', '', '');
+        }
+        else {
+            Toolbox.ShowFeedback('nuevaCuotaCostoModalFeedback', 'error', error);
+        }
+
+        return error == undefined;
     },
     SalvarCostoCuota: function () {
         if (ListaPagos.VerificarNuevaCuotaCosto()) {
@@ -312,10 +247,12 @@ var ListaPagos = {
                 type: "POST",
                 url: "proc/controller.php",
                 data: {
-                    func: "ingresar_cuota_costo",
+                    func: "ingresar_costo",
                     fecha_inicio: Toolbox.DataToMysqlDate($('.nuevaCuotaCosto_fecha_inicio').val()),
                     fecha_fin: Toolbox.DataToMysqlDate($('.nuevaCuotaCosto_fecha_fin').val()),
-                    valor: $(".nuevaCuotaCosto_valor").val()
+                    valor: $(".nuevaCuotaCosto_valor").val(),
+                    descuento_anio: $(".nuevaCuotaCosto_descuento_anio").val(),
+                    tiers_discounts: $(".nuevaCuotaCosto_tiers_discounts").val()
                 }
             }).done(function (data) {
                 if (data && !data.error) {
@@ -323,9 +260,9 @@ var ListaPagos = {
                     $('#nuevaCuotaCostoModal').modal('hide');
                 } else {
                     if (data && data.error) {
-                        Toolbox.ShowFeedback('feedbackContainer', 'error', data.error);
+                        Toolbox.ShowFeedback('nuevaCuotaCostoModalFeedback', 'error', data.error);
                     } else {
-                        Toolbox.ShowFeedback('feedbackContainer', 'error', 'Error al ingresar registro de costo de cuota.');
+                        Toolbox.ShowFeedback('nuevaCuotaCostoModalFeedback', 'error', 'Error al ingresar registro.');
                     }
                 }
                 Toolbox.StopLoaderModal();

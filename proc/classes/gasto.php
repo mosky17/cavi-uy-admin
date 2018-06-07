@@ -1,10 +1,8 @@
 <?php
+
 /**
- * Created by JetBrains PhpStorm.
- * User: Martin
- * Date: 03/08/13
- * Time: 07:04 PM
- * To change this template use File | Settings | File Templates.
+ * Coded by Mosky
+ * https://github.com/mosky17
  */
 
 require_once(dirname(__FILE__) . '/auth.php');
@@ -38,7 +36,7 @@ class Gasto {
     {
         $return = array();
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $instance = new Gasto($row['id'], $row['fecha_pago'], $row['razon'], $row['valor'], $row['notas'], $row['cancelado'], $row['rubro']);
                 $return[] = $instance;
             }
@@ -48,7 +46,7 @@ class Gasto {
 
     static public function get_gasto($id)
     {
-        $q = mysql_query("SELECT * FROM gastos WHERE id=".$id);
+        $q=Auth::$mysqli->query("SELECT * FROM gastos WHERE id=".$id);
         $result = Gasto::mysql_to_instances($q);
         if (count($result) == 1) {
             return $result[0];
@@ -64,8 +62,8 @@ class Gasto {
             return array("error" => "Caja cerrada! No se pueden alterar movimientos de esta fecha.");
         }
 
-        $q = mysql_query("UPDATE gastos SET cancelado=1 WHERE id=".$id);
-        if (mysql_affected_rows() == 1) {
+        $q=Auth::$mysqli->query("UPDATE gastos SET cancelado=1 WHERE id=".$id);
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Gasto no cancelado");
@@ -79,8 +77,8 @@ class Gasto {
             return array("error" => "Caja cerrada! No se pueden alterar movimientos de esta fecha.");
         }
 
-        $q = mysql_query("UPDATE gastos SET rubro='".$rubro."' WHERE id=".$id);
-        if (mysql_affected_rows() == 1) {
+        $q=Auth::$mysqli->query("UPDATE gastos SET rubro='".$rubro."' WHERE id=".$id);
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Gasto no modificado");
@@ -91,13 +89,13 @@ class Gasto {
 
     static public function get_lista_gastos()
     {
-        $q = mysql_query("SELECT * FROM gastos WHERE cancelado=0 ORDER BY fecha_pago;");
+        $q=Auth::$mysqli->query("SELECT * FROM gastos WHERE cancelado=0 ORDER BY fecha_pago;");
         return Gasto::mysql_to_instances($q);
     }
 
     static public function get_lista_gastos_con_cancelados()
     {
-        $q = mysql_query("SELECT * FROM gastos ORDER BY fecha_pago;");
+        $q=Auth::$mysqli->query("SELECT * FROM gastos ORDER BY fecha_pago;");
         return Gasto::mysql_to_instances($q);
     }
 
@@ -107,11 +105,11 @@ class Gasto {
             return array("error" => "Caja cerrada! No se pueden ingresar movimientos en esta fecha.");
         }
 
-        $q = mysql_query("INSERT INTO gastos (valor, fecha_pago, razon, notas, rubro) VALUES ('" . htmlspecialchars(mysql_real_escape_string($valor)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($fecha_pago)) . "', '" . htmlspecialchars(mysql_real_escape_string($razon)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($notas)) . "', '" . htmlspecialchars(mysql_real_escape_string($rubro)) . "');");
+        $q=Auth::$mysqli->query("INSERT INTO gastos (valor, fecha_pago, razon, notas, rubro) VALUES ('" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$valor)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_pago)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$razon)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$notas)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$rubro)) . "');");
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Error al insertar gasto");
@@ -124,7 +122,7 @@ class Gasto {
                          "otros_ingresos"=>0,
                          "gastos"=>0);
 
-        $q = mysql_query("SELECT * FROM gastos WHERE cancelado=0");
+        $q=Auth::$mysqli->query("SELECT * FROM gastos WHERE cancelado=0");
         $gastos = Gasto::mysql_to_instances($q);
 
         for($i=0;$i<count($gastos);$i++){

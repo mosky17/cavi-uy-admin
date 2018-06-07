@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
+
 require_once(dirname(__FILE__) . '/auth.php');
 
 Auth::connect();
@@ -25,7 +31,7 @@ class Admin {
     {
         $return = array();
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $instance = new Admin($row['id'], $row['nombre'], $row['email'], $row['secreto'], $row['permiso_pagos']);
                 $return[] = $instance;
             }
@@ -35,24 +41,24 @@ class Admin {
 
     static public function get_lista_admins()
     {
-        $q = mysql_query("SELECT * FROM admins ORDER BY id;");
+        $q=Auth::$mysqli->query("SELECT * FROM admins ORDER BY id;");
         return Admin::mysql_to_instances($q);
     }
 
     static public function ingresar_admin($nombre, $email, $clave, $permiso_pagos){
 
-        $q = mysql_query("SELECT * FROM admins WHERE email='". $nombre ."'");
+        $q=Auth::$mysqli->query("SELECT * FROM admins WHERE email='". $nombre ."'");
         if(mysql_num_rows($q) > 0){
             return array("error" => "Ya existe un administrador con ese usuario/email");
         }
 
-        $q = mysql_query("INSERT INTO admins (id, nombre, email, secreto, permiso_pagos) VALUES (null," .
-            '\'' . htmlspecialchars(mysql_real_escape_string($nombre)) . '\',' .
-            '\'' . htmlspecialchars(mysql_real_escape_string($email)) . '\',' .
+        $q=Auth::$mysqli->query("INSERT INTO admins (id, nombre, email, secreto, permiso_pagos) VALUES (null," .
+            '\'' . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$nombre)) . '\',' .
+            '\'' . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$email)) . '\',' .
             'MD5(\''.$clave.'\'), ' .
             $permiso_pagos . ')');
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Error al ingresar admin");
@@ -62,17 +68,17 @@ class Admin {
 
     static public function update_admin($id, $nombre, $email, $clave, $permiso_pagos){
 
-        $q = mysql_query("SELECT * FROM admins WHERE email='". $nombre ."' AND id<>".$id);
+        $q=Auth::$mysqli->query("SELECT * FROM admins WHERE email='". $nombre ."' AND id<>".$id);
         if(mysql_num_rows($q) > 0){
             return array("error" => "Ya existe un administrador con ese usuario/email");
         }
 
-        $q = mysql_query("UPDATE admins SET nombre='" . $nombre . "'," .
+        $q=Auth::$mysqli->query("UPDATE admins SET nombre='" . $nombre . "'," .
             "email='" . $email . "'," .
             "secreto=MD5('" . $clave . "')," .
             "permiso_pagos='" . $permiso_pagos . "' WHERE id=".$id);
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Error al modificar admin");
@@ -82,9 +88,9 @@ class Admin {
 
     static public function delete_admin($id){
 
-        $q = mysql_query("DELETE FROM admins WHERE id=".$id);
+        $q=Auth::$mysqli->query("DELETE FROM admins WHERE id=".$id);
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Error al borrar admin");

@@ -19,7 +19,7 @@ class Dato {
     {
         $return = array();
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $instance = new Dato($row['codigo'], $row['valor']);
                 $return[] = $instance;
             }
@@ -29,7 +29,7 @@ class Dato {
 
     static public function get_dato($codigo)
     {
-        $q = mysql_query("SELECT * FROM datos WHERE codigo='".$codigo."'");
+        $q=Auth::$mysqli->query("SELECT * FROM datos WHERE codigo='".$codigo."'");
         $result = Dato::mysql_to_instances($q);
         if (count($result) == 1) {
             return $result[0];
@@ -40,7 +40,7 @@ class Dato {
 
     static public function get_datos()
     {
-        $q = mysql_query("SELECT * FROM datos");
+        $q=Auth::$mysqli->query("SELECT * FROM datos");
         $datos = Dato::mysql_to_instances($q);
         $indexado = array();
         for($i=0;$i<count($datos);$i++){
@@ -54,21 +54,20 @@ class Dato {
         $dato = Dato::get_dato($codigo);
         if(array_key_exists("error",$dato)){
             //dato does not exists
-            $q = mysql_query("INSERT INTO datos (codigo, valor) VALUES ('" . htmlspecialchars(mysql_real_escape_string($codigo)) . "', '" . htmlspecialchars(mysql_real_escape_string($valor)) . "')");
-            if (mysql_affected_rows() == 1) {
+            $q=Auth::$mysqli->query("INSERT INTO datos (codigo, valor) VALUES ('" . htmlspecialchars(mysql_real_escape_string($codigo)) . "', '" . htmlspecialchars(mysql_real_escape_string($valor)) . "')");
+            if (mysqli_affected_rows(Auth::$mysqli) == 1) {
                 return array("ok" => true);
             } else {
                 return array("error" => "Dato no modificado");
             }
         }else{
-            $q = mysql_query("UPDATE datos SET valor='" . htmlspecialchars(mysql_real_escape_string($valor)) . "' WHERE codigo='" . htmlspecialchars(mysql_real_escape_string($codigo)) . "'");
-            if (mysql_affected_rows() == 1) {
+            $q=Auth::$mysqli->query("UPDATE datos SET valor='" . htmlspecialchars(mysql_real_escape_string($valor)) . "' WHERE codigo='" . htmlspecialchars(mysql_real_escape_string($codigo)) . "'");
+            if (mysqli_affected_rows(Auth::$mysqli) == 1) {
                 return array("ok" => true);
             } else {
                 return array("error" => "Dato no modificado");
             }
         }
-
     }
 
     static public function verificar_movimiento_caja($fecha){

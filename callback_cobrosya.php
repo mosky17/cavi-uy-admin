@@ -26,7 +26,7 @@ if (isset($_POST["id_secreto"])) {
 
     $sql = 'SELECT * FROM transacciones_cobrosya WHERE id_secreto = "'.$_POST["id_secreto"].'" AND cancelado = 0 AND id_medio_pago = ""';
     $result = mysql_query($sql) or die(mysql_error());
-    $transaccion = mysql_fetch_array($result, MYSQL_ASSOC);
+    $transaccion = mysqli_fetch_array($result, MYSQL_ASSOC);
     mysql_free_result($result);
 
     if ($transaccion) {

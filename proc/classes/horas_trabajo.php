@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
+
 require_once(dirname(__FILE__) . '/auth.php');
 
 Auth::connect();
@@ -30,7 +35,7 @@ class HorasTrabajo {
     {
         $return = array();
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $instance = new HorasTrabajo($row['id'], $row['created_at'], $row['notas'], $row['id_socio'], $row['cantidad_horas'], $row['rubro'], $row['costo_hora']);
                 $return[] = $instance;
             }
@@ -40,8 +45,8 @@ class HorasTrabajo {
 
     static public function borrar_horas($id)
     {
-        $q = mysql_query("DELETE FROM horas_trabajadas WHERE id=".$id);
-        if (mysql_affected_rows() == 1) {
+        $q=Auth::$mysqli->query("DELETE FROM horas_trabajadas WHERE id=".$id);
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Horas no borradas");
@@ -50,23 +55,23 @@ class HorasTrabajo {
 
     static public function get_horas_socio($id_socio)
     {
-        $q = mysql_query("SELECT * FROM horas_trabajadas WHERE id_socio=".$id_socio." ORDER BY created_at ASC;");
+        $q=Auth::$mysqli->query("SELECT * FROM horas_trabajadas WHERE id_socio=".$id_socio." ORDER BY created_at ASC;");
         return HorasTrabajo::mysql_to_instances($q);
     }
 
     static public function get_horas_all()
     {
-        $q = mysql_query("SELECT * FROM horas_trabajadas ORDER BY created_at ASC;");
+        $q=Auth::$mysqli->query("SELECT * FROM horas_trabajadas ORDER BY created_at ASC;");
         return HorasTrabajo::mysql_to_instances($q);
     }
 
     static public function ingresar_horas($created_at, $notas, $id_socio, $horas, $rubro, $costo){
 
-        $q = mysql_query("INSERT INTO horas_trabajadas (created_at, notas, id_socio, cantidad_horas, rubro, costo_hora) VALUES ('" . htmlspecialchars(mysql_real_escape_string($created_at)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($notas)) . "', " . htmlspecialchars(mysql_real_escape_string($id_socio)) . ", '" .
-            $horas . "', '" . htmlspecialchars(mysql_real_escape_string($rubro)) . "', " . htmlspecialchars(mysql_real_escape_string($costo)) . ");");
+        $q=Auth::$mysqli->query("INSERT INTO horas_trabajadas (created_at, notas, id_socio, cantidad_horas, rubro, costo_hora) VALUES ('" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$created_at)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$notas)) . "', " . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$id_socio)) . ", '" .
+            $horas . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$rubro)) . "', " . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$costo)) . ");");
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Error al ingresar horas");

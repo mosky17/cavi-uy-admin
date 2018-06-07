@@ -12,15 +12,12 @@ require_once(dirname(__FILE__).'/classes/socio.php');
 require_once(dirname(__FILE__).'/classes/pago.php');
 require_once(dirname(__FILE__).'/classes/gasto.php');
 require_once(dirname(__FILE__).'/classes/exportar.php');
-require_once(dirname(__FILE__).'/classes/entrega.php');
 require_once(dirname(__FILE__).'/classes/admin.php');
-require_once(dirname(__FILE__).'/classes/genetica.php');
-require_once(dirname(__FILE__).'/classes/informe_cosecha.php');
 require_once(dirname(__FILE__).'/classes/recordatorio_deuda.php');
-require_once(dirname(__FILE__).'/classes/dato.php');
 require_once(dirname(__FILE__).'/classes/horas_trabajo.php');
 require_once(dirname(__FILE__).'/classes/cobrosya.php');
 require_once(dirname(__FILE__).'/classes/transaccion_cobrosya.php');
+require_once(dirname(__FILE__).'/classes/costos.php.php');
 
 //************** AUTH ********************
 
@@ -62,11 +59,24 @@ function create_socio(){
         $_POST['tags'],
         $_POST['telefono'],
         $_POST['observaciones'],
-        $_POST['fecha_nacimiento']);
+        $_POST['fecha_nacimiento'],
+        $_POST['direccion']);
 	echo json_encode($result);
 }
 function update_socio(){
-    $result = Socio::update_socio($_POST['id'],$_POST['numero'], $_POST['nombre'], $_POST['documento'], $_POST['email'], $_POST['fecha_inicio'], $_POST['tags'], $_POST['telefono'], $_POST['observaciones'], $_POST['fecha_nacimiento']);
+    $result = Socio::update_socio(
+        $_POST['id'],
+        $_POST['numero'],
+        $_POST['nombre'],
+        $_POST['documento'],
+        $_POST['email'],
+        $_POST['fecha_inicio'],
+        isset($_POST["tags"]) ? $_POST['tags'] : "",
+        $_POST['telefono'],
+        $_POST['observaciones'],
+        $_POST['fecha_nacimiento'],
+        $_POST['direccion']
+    );
     echo json_encode($result);
 }
 function get_socio(){
@@ -278,16 +288,20 @@ function generar_hash(){
     echo $hash;
 }
 
-function ingresar_cuota_costo(){
-    $cuotaCostos = Pago::ingresar_cuota_costo($_POST['valor'],$_POST['fecha_inicio'],$_POST['fecha_fin']);
+function ingresar_costo(){
+    $cuotaCostos = Costos::ingresar_costo($_POST['valor'],$_POST['fecha_inicio'],$_POST['fecha_fin'],$_POST['descuento_anio'],$_POST['tiers_discounts']);
     echo json_encode($cuotaCostos);
 }
-function borrar_cuota_costo(){
-    $result = Pago::delete_cuota_costo($_POST['id']);
+function modificar_costo(){
+    $cuotaCostos = Costos::salvar_costos_modificar($_POST['id'],$_POST['valor'],$_POST['fecha_inicio'],$_POST['fecha_fin'],$_POST['descuento_anio'],$_POST['tiers_discounts']);
+    echo json_encode($cuotaCostos);
+}
+function borrar_costo(){
+    $result = Costos::delete_costo($_POST['id']);
     echo json_encode($result);
 }
-function get_costos_cuotas(){
-    $result = Pago::get_cuota_costos();
+function get_lista_costos(){
+    $result = Costos::get_lista_costos();
     echo json_encode($result);
 }
 

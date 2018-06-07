@@ -35,6 +35,8 @@ CREATE TABLE `cuota_costo` (
   `valor` varchar(50) NOT NULL,
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
+  `descuento_anio` text NOT NULL,
+  `tiers_discounts` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -75,6 +77,14 @@ CREATE TABLE `pagos` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
+CREATE TABLE `datos` (
+  `codigo` varchar(100) NOT NULL,
+  `valor` varchar(200) NOT NULL,
+  PRIMARY KEY (`codigo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 -- --------------------------------------------------------
 
 --
@@ -94,6 +104,7 @@ CREATE TABLE `socios` (
   `observaciones` varchar(500) NOT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT '1',
   `hash` varchar(300) NOT NULL,
+  `direccion` varchar(300) NOT NULL,
   `balance_efectivo` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

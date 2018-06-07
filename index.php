@@ -10,34 +10,26 @@ if(Auth::access_level()<0) { ?>
 <?php }else{ ?>
 
 <head>
-	<script src="scripts1.0.12/index.js"></script>
+	<script src="scripts1.0/index.js"></script>
 </head>
 
 <body>
 	<div class="container">
 		<h2>Lista de Socios</h2>
-            <div class="warnings">
-                <div id="index-warning-emails" class="alert alert-warning">Algunos de tus socios no tienen una <b>direcci&oacute;n de correo</b> v&aacute;lido, te recomendamos asignarle una individual a cada socio.</div>
-                <div id="index-warning-fechanac" class="alert alert-warning">Algunos de tus socios no tienen una <b>fecha de nacimiento</b> asignada, vas a necesitarla para presentar en el IRCCA.</div>
-                <div id="index-warning-doc" class="alert alert-warning">Algunos de tus socios no tienen un <b>n&uacute;mero de documento</b> asignado, vas a necesitarlo para presentar en el IRCCA.</div>
-            </div>
-			<div id="listaSociosControlesContainer" class="controlesLista">
+			<div id="listaSociosControlesContainer" class="controlesLista btn-toolbar" role="toolbar" ">
 				<div id="listaSociosBtnCrearSocio" class="btn btn-primary">Nuevo Socio</div>
-                <!--<div id="listaSociosBtnImportarSocio" class="btn btn-primary">Importar Socio de AECU</div>-->
-                <div id="listaSociosBtnArmarListaMails" class="btn btn-success">Armar Lista de Correo</div>
-                <!--<div id="listaSociosBtnEnviarEstado" class="btn btn-success" onclick="Index.OpenEnviarEstados();">Enviar Estados</div>-->
-                <select class="lista-socios-show" onchange="Index.CambiarSociosAMostrar();">
-                    <option value="activos">Mostrar Socios Activos</option>
-                    <option value="suspendidos">Mostrar Socios Suspendidos</option>
-                </select>
-                <div id="exportarListaDropdown" class="btn-group">
-                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <div id="listaSociosBtnArmarListaMails" class="btn btn-primary">Armar Lista de Correo</div>
+<!--                <select class="lista-socios-show" onchange="Index.CambiarSociosAMostrar();">-->
+<!--                    <option value="activos">Mostrar Socios Activos</option>-->
+<!--                    <option value="suspendidos">Mostrar Socios Suspendidos</option>-->
+<!--                </select>-->
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Exportar
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                        <li><a tabindex="-1" href="#" onClick="Index.ExportarListaSociosActivos();">Lista de socios activos</a></li>
-                    </ul>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#" onClick="Index.ExportarListaSociosActivos();">Lista de socios activos</a>
+                    </div>
                 </div>
                 <h5 id="totalRegistrosSocios" class="totalRegistros"></h5>
 			</div>

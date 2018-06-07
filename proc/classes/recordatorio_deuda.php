@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
+
 require_once(dirname(__FILE__) . '/auth.php');
 
 Auth::connect();
@@ -24,7 +29,7 @@ class RecordatorioDeuda {
     {
         $return = array();
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $instance = new RecordatorioDeuda($row['id'], $row['id_socio'], $row['monto'], $row['razon']);
                 $return[] = $instance;
             }
@@ -34,24 +39,24 @@ class RecordatorioDeuda {
 
     static public function GetDeudasSocio($id_socio)
     {
-        $q = mysql_query("SELECT * FROM recordatorios_deuda WHERE id_socio=" . $id_socio . " ORDER BY id;");
+        $q=Auth::$mysqli->query("SELECT * FROM recordatorios_deuda WHERE id_socio=" . $id_socio . " ORDER BY id;");
         return RecordatorioDeuda::mysql_to_instances($q);
     }
 
     static public function GetAllDeudas(){
 
-        $q = mysql_query("SELECT * FROM recordatorios_deuda");
+        $q=Auth::$mysqli->query("SELECT * FROM recordatorios_deuda");
         return RecordatorioDeuda::mysql_to_instances($q);
     }
 
     static public function IngresarDeuda($id_socio, $monto, $razon){
 
-        $q = mysql_query("INSERT INTO recordatorios_deuda (id_socio, monto, razon) VALUES ('" .
-            htmlspecialchars(mysql_real_escape_string($id_socio)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($monto)) . "', '" .
-            htmlspecialchars(mysql_real_escape_string($razon)) . "')");
+        $q=Auth::$mysqli->query("INSERT INTO recordatorios_deuda (id_socio, monto, razon) VALUES ('" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$id_socio)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$monto)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$razon)) . "')");
 
-        if (mysql_affected_rows() == 1) {
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Error al insertar deuda");
@@ -61,8 +66,8 @@ class RecordatorioDeuda {
 
     static public function CancelarDeuda($id){
 
-        $q = mysql_query("DELETE FROM recordatorios_deuda WHERE id=" . $id);
-        if (mysql_affected_rows() == 1) {
+        $q=Auth::$mysqli->query("DELETE FROM recordatorios_deuda WHERE id=" . $id);
+        if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
         } else {
             return array("error" => "Error al cancelar deuda.");

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
+
 // Aca va el token de COBROSYA que esta en su cuenta en Configuracion / Opciones de Configuracion / API para desarrolladores
 //define('TOKEN', 'eb4a02e591caf3f2c38f0ca22946c2b2'); //sandbox
 define('TOKEN', '6955ac79593ec8c4927f89952a01d15b');
@@ -14,7 +19,6 @@ define('URL_API_COBRAR', 'http://api.cobrosya.com/v4/cobrar'); //live
 require_once(dirname(__FILE__) . '/auth.php');
 require_once(dirname(__FILE__) . '/socio.php');
 require_once(dirname(__FILE__) . '/pago.php');
-require_once(dirname(__FILE__) . '/mandrill.php');
 
 date_default_timezone_set('America/Montevideo');
 

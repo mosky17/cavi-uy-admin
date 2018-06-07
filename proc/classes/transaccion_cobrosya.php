@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
+
 require_once(dirname(__FILE__) . '/auth.php');
 
 Auth::connect();
@@ -32,7 +37,7 @@ class TransaccionCobrosYa {
     {
         $return = array();
         if($result){
-            while ($row = mysql_fetch_array($result)) {
+            while ($row = mysqli_fetch_array($result)) {
                 $instance = new TransaccionCobrosYa($row['id'], $row['id_socio'], $row['month'], $row['year'],
                     $row['monto'], $row['talon_url'], $row['talon'], $row['medio_pago']);
                 $return[] = $instance;
@@ -43,7 +48,7 @@ class TransaccionCobrosYa {
 
     static public function get_facturas_pendientes_cobrosya($id_socio)
     {
-        $q = mysql_query("SELECT * FROM transacciones_cobrosya WHERE id_socio=".$id_socio);
+        $q=Auth::$mysqli->query("SELECT * FROM transacciones_cobrosya WHERE id_socio=".$id_socio);
         return TransaccionCobrosYa::mysql_to_instances($q);
     }
 

@@ -4,7 +4,6 @@
  * See LICENSE.txt for license details.
  */
 
-require_once(dirname(__FILE__) . '/classes/mandrill.php');
 require_once(dirname(__FILE__) . '/classes/socio.php');
 require_once(dirname(__FILE__) . '/classes/pago.php');
 require_once(dirname(__FILE__).'/../config.php');

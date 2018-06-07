@@ -11,102 +11,97 @@ if (Auth::access_level() < 0) {
 <?php } else { ?>
 
     <head>
-        <script src="scripts1.0.12/socio.js"></script>
+        <script src="scripts1.0/socio.js"></script>
     </head>
 
     <body>
     <div class="container">
         <div class="socioHeader">
             <h2 id="socioNombreTitulo"></h2>
-            <span id="socioLabelEstado" class="label"></span>
+            <span id="socioLabelEstado" class="badge"></span>
 
             <div id=feedbackContainer></div>
         </div>
 
-        <div class="box row-fluid">
-            <div class="span6">
+        <div class="box">
+            <table class="form_table">
+            <tr class="row_empresa">
+                <td><div style="display:none;" id="socioDatosFieldNombre" class="socioDatosField">
+                        <h4>Empresa</h4>
 
-                <div style="display:none;" id="socioDatosFieldNombre" class="socioDatosField">
-                    <h4>Nombre</h4>
+                        <div id="socioDatosValorNombre" class="socioDatosValor"></div>
+                    </div></td>
+                <td></td>
+            </tr>
+                <tr>
+                    <td><div class="socioDatosField">
+                            <h4>N&uacute;mero de socio</h4>
 
-                    <div id="socioDatosValorNombre" class="socioDatosValor"></div>
-                </div>
-                <div class="socioDatosField">
-                    <h4>N&uacute;mero</h4>
+                            <div id="socioDatosValorNumero" class="socioDatosValor"></div>
+                        </div></td>
+                    <td><div class="span6">
+                            <div class="socioDatosField">
+                                <h4>Fecha Asociación</h4>
 
-                    <div id="socioDatosValorNumero" class="socioDatosValor"></div>
-                </div>
-                <div class="socioDatosField">
-                    <h4>Documento</h4>
+                                <div id="socioDatosValorFechaInicio" class="socioDatosValor"></div>
+                            </div></td>
+                </tr>
+                <tr>
+                    <td><div class="socioDatosField">
+                            <h4>RUT</h4>
 
-                    <div id="socioDatosValorDocumento" class="socioDatosValor"></div>
-                </div>
-                <div class="socioDatosField">
-                    <h4>Email</h4>
+                            <div id="socioDatosValorDocumento" class="socioDatosValor"></div>
+                        </div></td>
+                    <td><div class="socioDatosField">
+                            <h4>Balance de cuenta</h4>
 
-                    <div id="socioDatosValorEmail" class="socioDatosValor"></div>
-                </div>
-                <div class="socioDatosField">
-                    <h4>Fecha Nacimiento</h4>
+                            <div id="socioDatosValorBalanceHoras" class="socioDatosValor"></div>
+                        </div></td>
+                </tr>
+                <tr>
+                    <td><div class="socioDatosField">
+                            <h4>Email</h4>
 
-                    <div id="socioDatosValorFechaNacimiento" class="socioDatosValor"></div>
-                </div>
-                <div class="socioDatosField">
-                    <h4>Tel&eacute;fono</h4>
+                            <div id="socioDatosValorEmail" class="socioDatosValor"></div>
+                        </div></td>
+                    <td><div class="socioDatosField">
+                            <h4>Tags</h4>
 
-                    <div id="socioDatosValorTelefono" class="socioDatosValor"></div>
-                </div>
+                            <div id="socioDatosValorTags" class="socioDatosValor"></div>
+                        </div></td>
+                </tr>
+                <tr>
+                    <td><div class="socioDatosField">
+                            <h4>Fecha Fundación</h4>
 
-            </div>
-            <div class="span6">
-                <div class="socioDatosField">
-                    <h4>Fecha Inicio</h4>
+                            <div id="socioDatosValorFechaNacimiento" class="socioDatosValor"></div>
+                        </div></td>
+                    <td><div class="socioDatosField">
+                            <h4>Observaciones</h4>
 
-                    <div id="socioDatosValorFechaInicio" class="socioDatosValor"></div>
-                </div>
-                <div class="socioDatosField">
-                    <h4>Tags</h4>
+                            <div id="socioDatosValorObservaciones" class="socioDatosValor"></div>
+                        </div></td>
+                </tr>
+                <tr>
+                    <td><div class="socioDatosField">
+                            <h4>Tel&eacute;fono</h4>
 
-                    <div id="socioDatosValorTags" class="socioDatosValor"></div>
-                </div>
-                <div class="socioDatosField">
-                    <h4>Balance de Horas</h4>
+                            <div id="socioDatosValorTelefono" class="socioDatosValor"></div>
+                        </div></td>
+                    <td><div class="socioDatosField">
+                            <h4>Dirección</h4>
 
-                    <div id="socioDatosValorBalanceHoras" class="socioDatosValor"></div>
-                </div>
-                <div class="socioDatosField">
-                    <h4>Observaciones</h4>
-
-                    <div id="socioDatosValorObservaciones" class="socioDatosValor"></div>
-                </div>
-            </div>
+                            <div id="socioDatosValorDireccion" class="socioDatosValor"></div>
+                        </div></td>
+                </tr>
+            </table>
             <div style="display:none;" class="span12" id="socioBtnSalvarContainer">
                 <div class="btn btn-primary" id="socioBtnSalvar">Salvar</div>
             </div>
         </div>
 
-        <!--Facturas pendientes-->
-<!--        <h3 id="socioPagoseTitulo">Facturas Pendientes</h3>-->
-<!---->
-<!--        <div class="box row-fluid">-->
-<!--            <div class="span12 socioListaContenedor">-->
-<!--                <table class="table table-hover table-striped">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th>#</th>-->
-<!--                        <th>Monto $</th>-->
-<!--                        <th>Detalle</th>-->
-<!--                        <th>Fecha Vencimiento</th>-->
-<!--                        <th>Descargar Factura</th>-->
-<!--                    </tr>-->
-<!--                    </thead>-->
-<!--                    <tbody id="listaFacturasPendientesSocioTabla"></tbody>-->
-<!--                </table>-->
-<!--            </div>-->
-<!--        </div>-->
-
-        <!--Pagos-->
-        <h3 id="socioPagoseTitulo">&Uacute;ltimos Pagos</h3>
+<!--        Pagos-->
+        <h3 id="socioPagoseTitulo">Pagos</h3>
 
         <div class="botoneraTopContainer">
             <div class="btn btn-success" title="Ingresar nuevo pago" onclick="Socio.OpenModalNuevoPago();">Agregar
@@ -115,19 +110,19 @@ if (Auth::access_level() < 0) {
             <div class="btn btn-danger" title="Nuevo recordatorio de deuda" onclick="Socio.OpenModalNuevaDeuda();">
                 Agregar Deuda
             </div>
-<!--            <div class="btn" style="-->
-<!--            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff670f+0,d8610d+100 */-->
-<!--background: #ff670f; /* Old browsers */-->
-<!--background: -moz-linear-gradient(top, #ff670f 0%, #d8610d 100%); /* FF3.6-15 */-->
-<!--background: -webkit-linear-gradient(top, #ff670f 0%,#d8610d 100%); /* Chrome10-25,Safari5.1-6 */-->
-<!--background: linear-gradient(to bottom, #ff670f 0%,#d8610d 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */-->
-<!--filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', endColorstr='#d8610d',GradientType=0 ); /* IE6-9 */-->
-<!--    color: #fff;-->
-<!--    border: 1px solid #ff670f;-->
-<!--    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);-->
-<!--            " title="Nuevo talon CobrosYA" onclick="Socio.OpenModalNuevoTalonCobrosYA();">-->
-<!--                Nuevo talon CobrosYA-->
-<!--            </div>-->
+            <div class="btn" style="
+            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff670f+0,d8610d+100 */
+background: #ff670f; /* Old browsers */
+background: -moz-linear-gradient(top, #ff670f 0%, #d8610d 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top, #ff670f 0%,#d8610d 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom, #ff670f 0%,#d8610d 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', endColorstr='#d8610d',GradientType=0 ); /* IE6-9 */
+    color: #fff;
+    border: 1px solid #ff670f;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+            " title="Nuevo talon CobrosYA" onclick="Socio.OpenModalNuevoTalonCobrosYA();">
+                Nuevo talon CobrosYA
+            </div>
         </div>
 
         <!-- Recordatorio Deuda -->
@@ -152,8 +147,28 @@ if (Auth::access_level() < 0) {
             </div>
         </div>
 
+        <!--        Facturas pendientes-->
+        <h3 id="socioPagoseTitulo">Pagos Pendientes</h3>
+
+        <div class="box row-fluid">
+            <div class="span12 socioListaContenedor">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Monto $</th>
+                        <th>Detalle</th>
+                        <th>Fecha Vencimiento</th>
+                        <th>Descargar Factura</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaFacturasPendientesSocioTabla"></tbody>
+                </table>
+            </div>
+        </div>
+
         <!--Pagos por mes-->
-        <h3 class="socioPagoseTitulo">Pagos por Mes</h3>
+        <h3 class="socioPagoseTitulo">Pagos ordenados por mes</h3>
 
         <div class="box row-fluid">
             <div class="span12 socioListaContenedor">
@@ -171,30 +186,9 @@ if (Auth::access_level() < 0) {
             </div>
         </div>
 
-        <!--Entregas-->
-        <h3 id="socioEntregasTitulo">Entregas <i id="socioBtnNuevaEntrega" class="icon-plus-sign-alt socioIconBtnTitle"
-                                                 title="Registrar nueva entrega"
-                                                 onclick="Socio.OpenModalNuevaEntrega();"></i></h3>
-
-        <div class="box row-fluid">
-            <div class="span12 socioListaContenedor">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Peso (gr)</th>
-                        <th>Fecha Entregado</th>
-<!--                        <th>Variedad</th>-->
-                        <th>Notas</th>
-                        <th>Borrar</th>
-                    </tr>
-                    </thead>
-                    <tbody id="listaEntregasSocioTabla"></tbody>
-                </table>
-            </div>
-        </div>
 
     <!--Horas-->
-    <h3 id="socioEntregasTitulo">Horas Voluntariado</h3>
+    <h3 id="socioEntregasTitulo">Trabajo por descuento</h3>
 
     <div class="box row-fluid">
         <div class="span12 socioListaContenedor">
@@ -310,87 +304,97 @@ if (Auth::access_level() < 0) {
     </div>
 
     <!-- Modal ingresar pago -->
-    <div id="socioIngresarPagoModal" class="modal hide fade" tabindex="-1" role="dialog"
-         aria-labelledby="socioIngresarPagoModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3 id="socioIngresarPagoModalLabel">Ingresar Pago</h3>
-        </div>
-        <div class="modal-body">
-            <div id="feedbackContainerModalIngresarPago" class="feedbackContainerModal"></div>
-            <div class="modalListaRow rowNuevoPagoRazon">
-                <h4>Raz&oacute;n</h4>
-                <select id="socioIngresarPagoRazon" onchange="Socio.TogglePagoRazon();">
-                    <option value="mensualidad">Mensualidad</option>
-                    <option value="matricula">Matr&iacute;cula</option>
-                </select>
-                <select id="socioIngresarPagoRazonMensualidadMes">
-                    <option value="Enero">Enero</option>
-                    <option value="Febrero">Febrero</option>
-                    <option value="Marzo">Marzo</option>
-                    <option value="Abril">Abril</option>
-                    <option value="Mayo">Mayo</option>
-                    <option value="Junio">Junio</option>
-                    <option value="Julio">Julio</option>
-                    <option value="Agosto">Agosto</option>
-                    <option value="Setiembre">Setiembre</option>
-                    <option value="Octubre">Octubre</option>
-                    <option value="Noviembre">Noviembre</option>
-                    <option value="Diciembre">Diciembre</option>
-                </select>
-                <select id="socioIngresarPagoRazonMensualidadAnio">
-                    <option value="2014">2014</option>
-                    <option value="2015">2015</option>
-                    <option value="2016">2016</option>
-                    <option value="2017">2017</option>
-                    <option value="2018">2018</option>
-                    <option value="2019">2019</option>
-                    <option value="2020">2020</option>
-                </select>
-            </div>
-            <div class="modalListaRow rowFechaNuevoPago">
-                <div class="caja">
-                    <h4>Fecha</h4>
-                    <input type="text" placeholder="" id="socioIngresarPagoFecha" style="margin-left: 43px;width:130px;">
+    <div id="socioIngresarPagoModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo pago</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="caja">
-                    <h4>Via</h4>
-                    <select style="" id="socioIngresarPagoTipo" placeholder="01/12/2013">
-                        <option value="transferencia_brou">Transferencia BROU</option>
-                        <option value="personalmente">Personalmente</option>
-                        <option value="otra">Otra</option>
-                    </select>
+                <div class="modal-body">
+                    <div id="feedbackContainerModalIngresarPago" class="feedbackContainerModal"></div>
+                    <div class="modalListaRow">
+                        <h4>Raz&oacute;n</h4>
+                        <select id="socioIngresarPagoRazon" onchange="Socio.TogglePagoRazon();">
+                            <option value="mensualidad">Mensualidad</option>
+                            <option value="medioanio">Semestre</option>
+                            <option value="anio">Año</option>
+                        </select>
+                        <select id="socioIngresarPagoRazonMensualidadMes">
+                            <option value="Enero">Enero</option>
+                            <option value="Febrero">Febrero</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                            <option value="Mayo">Mayo</option>
+                            <option value="Junio">Junio</option>
+                            <option value="Julio">Julio</option>
+                            <option value="Agosto">Agosto</option>
+                            <option value="Setiembre">Setiembre</option>
+                            <option value="Octubre">Octubre</option>
+                            <option value="Noviembre">Noviembre</option>
+                            <option value="Diciembre">Diciembre</option>
+                        </select>
+                        <select id="socioIngresarPagoRazonMensualidadParte">
+                            <option value="primer">Primer semestre</option>
+                            <option value="segundo">Segundo semestre</option>
+                        </select>
+                        <select id="socioIngresarPagoRazonMensualidadAnio">
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                        </select>
+                    </div>
+                    <div class="modalListaRow rowFechaNuevoPago">
+                        <div class="caja">
+                            <h4>Fecha</h4>
+                            <input type="text" placeholder="" id="socioIngresarPagoFecha" style="margin-left: 43px;width:130px;">
+                        </div>
+                        <div class="caja">
+                            <h4>Via</h4>
+                            <select style="margin-top: 7px;" id="socioIngresarPagoTipo" placeholder="01/12/2013">
+                                <option value="">Sin especificar</option>
+                                <option value="transferencia_brou">Transferencia BROU</option>
+                                <option value="personalmente">Personalmente</option>
+                                <option value="otra">Otra</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modalListaRow" style="width: 100%;">
+                        <h4>Monto $</h4>
+                        <input style="width: 110px;" type="text" placeholder="0.00" id="socioIngresarPagoValor" onchange="Socio.OnChangeMonto();">
+                    </div>
+                    <div class="modalListaRow rowFechaNuevoPago">
+                        <div class="caja">
+                            <h4>Descuento $</h4>
+                            <input type="text" placeholder="0.00" id="socioIngresarPagoDescuento" style="margin-left: 23px;width:100px;">
+                        </div>
+                        <div class="caja">
+                            <h4>Raz&oacute;n desc.</h4>
+                            <select style="margin: 0 0 0 20px;margin-top: 7px;" id="socioIngresarPagoRazonDescuento" onchange="Socio.OnChangeRazonDescuentoPago();">
+                                <option value="">Sin especificar</option>
+                                <option value="Resolucion directiva">Resoluci&oacute;n directiva</option>
+                                <option value="Balance">Balance</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modalListaRow">
+                        <h4>Notas</h4>
+                        <textarea style="width: 400px; height: 50px; max-width: 400px;"
+                                  id="socioIngresarPagoNotas"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <img src="images/loaderModal.gif" class="loaderModal">
+                    <button type="button" class="btn btn-primary" onclick="Socio.IngresarPago();">Ingresar pago</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
-            <div class="modalListaRow">
-                <h4>Monto $</h4>
-                <input style="width: 110px;" type="text" placeholder="0.00" id="socioIngresarPagoValor" onchange="Socio.OnChangeMonto();">
-            </div>
-            <div class="modalListaRow rowFechaNuevoPago">
-                <div class="caja">
-                    <h4>Descuento $</h4>
-                    <input type="text" placeholder="0.00" id="socioIngresarPagoDescuento" style="margin-left: 23px;width:100px;">
-                </div>
-                <div class="caja">
-                    <h4>Raz&oacute;n desc.</h4>
-                    <select style="margin: 0 0 0 10px;" id="socioIngresarPagoRazonDescuento" onchange="Socio.OnChangeRazonDescuentoPago();">
-                        <option value="Voluntariado">Voluntariado</option>
-                        <option value="Resolucion directiva">Resoluci&oacute;n directiva</option>
-                        <option value="BalanceVoluntariado">Balance Voluntariado</option>
-                        <option value="Otra">Otra</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modalListaRow">
-                <h4>Notas</h4>
-                <textarea style="width: 400px; height: 50px; max-width: 400px;"
-                          id="socioIngresarPagoNotas"></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <img src="images/loaderModal.gif" class="loaderModal">
-            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
-            <button id="socioIngresarPagoModalBtnIngresar" class="btn btn-primary">Ingresar</button>
         </div>
     </div>
 
@@ -441,41 +445,6 @@ if (Auth::access_level() < 0) {
             <img src="images/loaderModal.gif" class="loaderModal">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
             <button id="socioCambiarEstadoModalBtnCambiar" class="btn btn-primary">Cambiar</button>
-        </div>
-    </div>
-
-    <!-- Modal ingresar entrega -->
-    <div id="socioIngresarEntregaModal" class="modal hide fade" tabindex="-1" role="dialog"
-         aria-labelledby="socioIngresarEntregaModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3 id="socioIngresarEntregaModalLabel">Ingresar Pago</h3>
-        </div>
-        <div class="modal-body">
-            <div id="socioIngresarEntregaModalFeedback" class="feedbackContainerModal"></div>
-            <div class="modalListaRow">
-                <h4>Gramos</h4>
-                <input type="text" placeholder="0.00" id="socioIngresarEntregaGramos">
-            </div>
-            <div class="modalListaRow">
-                <h4>Fecha</h4>
-                <input type="text" placeholder="" id="socioIngresarEntregaFecha">
-            </div>
-            <div class="modalListaRow">
-                <h4>Variedad</h4>
-                <select id="socioIngresarEntregaVariedad"></select>
-            </div>
-            <div class="modalListaRow">
-                <h4>Notas</h4>
-                <textarea style="width: 400px; height: 100px; max-width: 400px; max-height: 100px;"
-                          id="socioIngresarEntregaNotas"></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <img src="images/loaderModal.gif" class="loaderModal">
-            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>
-            <button id="socioIngresarEntrega" class="btn btn-primary" onclick="Socio.IngresarEntrega();">Ingresar
-            </button>
         </div>
     </div>
 
