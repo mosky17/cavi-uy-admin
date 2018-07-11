@@ -18,19 +18,19 @@ if(Auth::access_level()<0) { ?>
 		<h2>Lista de Socios</h2>
 			<div id="listaSociosControlesContainer" class="controlesLista btn-toolbar" role="toolbar" ">
 				<div id="listaSociosBtnCrearSocio" class="btn btn-primary">Nuevo Socio</div>
-                <div id="listaSociosBtnArmarListaMails" class="btn btn-primary">Armar Lista de Correo</div>
+<!--                <div id="listaSociosBtnArmarListaMails" class="btn btn-primary">Armar Lista de Correo</div>-->
 <!--                <select class="lista-socios-show" onchange="Index.CambiarSociosAMostrar();">-->
 <!--                    <option value="activos">Mostrar Socios Activos</option>-->
 <!--                    <option value="suspendidos">Mostrar Socios Suspendidos</option>-->
 <!--                </select>-->
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Exportar
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#" onClick="Index.ExportarListaSociosActivos();">Lista de socios activos</a>
-                    </div>
-                </div>
+<!--                <div class="dropdown">-->
+<!--                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                        Exportar-->
+<!--                    </button>-->
+<!--                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">-->
+<!--                        <a class="dropdown-item" href="#" onClick="Index.ExportarListaSociosActivos();">Lista de socios activos</a>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <h5 id="totalRegistrosSocios" class="totalRegistros"></h5>
 			</div>
 			<div id=feedbackContainer></div>

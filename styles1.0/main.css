@@ -156,7 +156,6 @@ height: 28px;
 #pagoBtnCancelar ,
 #gastoBtnCancelar ,
 #socioBtnSalvar {
-	width:100px;
 	float:right;
 	margin: 0 20px;
 }
@@ -293,6 +292,10 @@ height: 28px;
     color: #e03a3a;
 }
 
+.text-error {
+    color:red;
+}
+
 .green-arrow {
     color: #70c641;
 }
@@ -304,6 +307,8 @@ height: 28px;
     padding: 10px;
     min-height: 30px;
     background-color: #fff;
+    display: table;
+    width: 100%;
 }
 
 .totales .campo {

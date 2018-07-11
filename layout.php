@@ -8,12 +8,16 @@
 session_start();
 
 require_once(dirname(__FILE__).'/proc/classes/auth.php');
+require_once(dirname(__FILE__).'/proc/classes/dato.php');
 require_once(dirname(__FILE__).'/config.php');
+
+$datos = Dato::get_datos();
 
 ?>
 
 <script type="text/javascript">
     var GLOBAL_domain = "<?php echo $GLOBALS['domain']; ?>";
+    var DATO_cajacerrada = "<?php echo $datos["cajacerrada"]; ?>";
 </script>
 
 <!DOCTYPE html>
@@ -32,17 +36,17 @@ require_once(dirname(__FILE__).'/config.php');
 
 <nav id="headerNavigation" class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #333366;">
         <a class="navbar-brand" id="nav_brand">
-            <img src="images/logo_cavi_small.png">
+            <img src="images/logo_cavi_small_shadow.png">
         </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link active" href="<?php echo $GLOBALS['domain']; ?>">Socios <span class="sr-only">(current)</span></a>
-                    <a class="nav-item nav-link" href="<?php echo $GLOBALS['domain']; ?>/lista_pagos.php">Pagos</a>
-                    <a class="nav-item nav-link" href="<?php echo $GLOBALS['domain']; ?>/lista_gastos.php">Caja</a>
-                    <a class="nav-item nav-link" href="<?php echo $GLOBALS['domain']; ?>/lista_admins.php">Admin</a>
+                    <a id="nav_lista_socios" class="nav-item nav-link active" href="<?php echo $GLOBALS['domain']; ?>">Socios <span class="sr-only">(current)</span></a>
+                    <a id="nav_lista_pagos" class="nav-item nav-link" href="<?php echo $GLOBALS['domain']; ?>/lista_pagos.php">Pagos</a>
+                    <a id="nav_lista_caja" class="nav-item nav-link" href="<?php echo $GLOBALS['domain']; ?>/lista_gastos.php">Caja</a>
+                    <a id="nav_lista_admins" class="nav-item nav-link" href="<?php echo $GLOBALS['domain']; ?>/lista_admins.php">Admin</a>
                 </div>
     <div class="navbar-nav" style="margin: 0 0 0 auto;">
         <p id="admin_header_name" class="nav-link"><?php echo Auth::get_admin_nombre() . " | "?></p>

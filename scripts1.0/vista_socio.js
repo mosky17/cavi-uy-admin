@@ -5,26 +5,6 @@ var VistaSocio = {
     Geneticas: null,
     BalanceHoras:0,
     DescuentoBalanceHoras:0,
-    LoadGeneticas: function(){
-        Toolbox.ShowLoader();
-
-        $.ajax({
-            dataType: 'json',
-            type: "POST",
-            url: "proc/public_controller.php",
-            data: { func: "get_lista_geneticas" }
-        }).done(function (data) {
-            if (data && !data.error) {
-                VistaSocio.Geneticas = {};
-
-                for(var i=0;i<data.length;i++){
-                    VistaSocio.Geneticas[data[i].id] = data[i];
-                }
-            }
-            VistaSocio.LoadEntregas();
-            Toolbox.StopLoader();
-        });
-    },
     LoadSocio: function () {
 
         Toolbox.ShowLoader();
@@ -38,24 +18,28 @@ var VistaSocio = {
                 VistaSocio.SocioData = data;
                 VistaSocio.IdSocio = data.id;
 
-                $('#socioLabelEstado').removeClass('labelEstadoActivo');
-                $('#socioLabelEstado').removeClass('labelEstadoSuspendido');
-                if(data.activo==true){
-                    $('#socioLabelEstado').addClass('labelEstadoActivo');
+                $('#socioLabelEstado').removeClass('badge-success');
+                $('#socioLabelEstado').removeClass('badge-danger');
+                if (data.activo == true) {
+                    $('#socioLabelEstado').addClass('badge-success');
                     $('#socioLabelEstado').html("Activo");
-                }else{
-                    $('#socioLabelEstado').addClass('labelEstadoSuspendido');
+                } else {
+                    $('#socioLabelEstado').addClass('badge-danger');
                     $('#socioLabelEstado').html("Suspendido");
                 }
 
                 $("#socioNombreTitulo").html(data.nombre);
                 $("#socioDatosValorNumero").html('<p>' + data.numero + "</p>");
+                $("#socioDatosValorDocumento").html('<p>' + data.documento + "</p>");
+                $("#socioDatosValorDireccion").html('<p>' + data.direccion + "</p>");
                 $("#socioDatosValorEmail").html('<p>' + data.email + "</p>");
                 $("#socioDatosValorFechaInicio").html('<p>' + Toolbox.MysqlDateToDate(data.fecha_inicio) + "</p>");
+                $("#socioDatosValorFechaNacimiento").html('<p>' + Toolbox.MysqlDateToDate(data.fecha_nacimiento) + "</p>");
+                $("#socioDatosValorTelefono").html('<p>' + data.telefono + "</p>");
+                $("#socioDatosValorTamanio").html('<p>' + data.tamanio + "</p>");
 
                 VistaSocio.LoadPagos();
                 VistaSocio.GetDeudas();
-                VistaSocio.LoadGeneticas();
 
             } else {
                 if (data && data.error) {
@@ -109,40 +93,6 @@ var VistaSocio = {
             Toolbox.StopLoader();
         });
     },
-    LoadEntregas: function(){
-        Toolbox.ShowLoader();
-        $.ajax({
-            dataType: 'json',
-            type: "POST",
-            url: "proc/public_controller.php",
-            data: { func: "get_entregas_socio", id_socio: VistaSocio.IdSocio }
-        }).done(function (data) {
-            if (data && !data.error) {
-
-                //$('#listaEntregasSocioTabla').html("");
-                //for (var i = 0; i < data.length; i++) {
-                //
-                //    //var genetica = VistaSocio.Geneticas[data[i].id_genetica];
-                //    //if(genetica){
-                //    //    genetica = genetica.nombre;
-                //    //}else{
-                //    //    genetica = "";
-                //    //}
-                //
-                //    //$('#listaEntregasSocioTabla').append('<tr><td>' + data[i].gramos + '</td>' +
-                //    //    '<td>' + Toolbox.MysqlDateToDate(data[i].fecha) + '</td></tr>');
-                //}
-                VistaSocio.ArmarGraficaEntregas(data);
-            } else {
-                if (data && data.error) {
-                    Toolbox.ShowFeedback('feedbackContainer', 'error', data.error);
-                } else {
-                    Toolbox.ShowFeedback('feedbackContainer', 'error', 'Error inesperado');
-                }
-            }
-            Toolbox.StopLoader();
-        });
-    },
     GetDeudas: function(){
         Toolbox.ShowLoader();
         $.ajax({
@@ -161,77 +111,6 @@ var VistaSocio = {
                 }
             }
             Toolbox.StopLoader();
-        });
-    },
-    ArmarGraficaEntregas: function(data){
-
-        var dataSource = [];
-        var auxData = {};
-        var orderCats = [];
-
-        data.sort(function(a, b){
-            var dateA = new Date(a.fecha);
-            var dateB = new Date(b.fecha);
-            return dateA - dateB;
-        });
-
-        //parse data
-        for(var i=0;i<data.length;i++){
-            var fecha = new Date(data[i].fecha);
-            var year = fecha.getFullYear();
-            var textoX = Toolbox.NombreMesesEsp[fecha.getMonth()+1] + " " + year;
-
-            if(!auxData[textoX]){
-                auxData[textoX] = 0;
-                orderCats.push(textoX);
-            }
-
-            auxData[textoX] += Number(data[i].gramos);
-        }
-
-        $.each(auxData, function( index, value ) {
-            var mes = index;
-            dataSource.push({mes: mes, valor: value});
-        });
-
-        //console.log(dataSource);
-
-        /*
-         var dataSource = [
-         { state: "Germany", young: 6.7, older: 5.1 },
-         { state: "Japan", young: 9.6, middle: 43.4, older: 9},
-         { state: "Russia", young: 13.5, middle: 49},
-         { state: "USA", middle: 90.3, older: 14.5 }
-         ];
-         */
-
-        $("#torta-entregas").dxChart({
-            dataSource: dataSource,
-            series: {
-                argumentField: "mes",
-                valueField: "valor",
-                type: "bar",
-                color: '#ffa500'
-            },
-            legend: {
-                visible: false
-            },
-            tooltip: {
-                enabled: true,
-                customizeText: function () {
-                    var num = Number(this.valueText);
-                    return num.toFixed(2) + " gr.";
-                }
-            },
-            valueAxis: {
-                title: {
-                    text: "gramos"
-                }
-            },
-            argumentAxis: {
-                type: 'discrete',
-                categories: orderCats
-            }
         });
     },
     GetHorasVoluntariado: function(){

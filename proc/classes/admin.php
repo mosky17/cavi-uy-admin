@@ -48,7 +48,7 @@ class Admin {
     static public function ingresar_admin($nombre, $email, $clave, $permiso_pagos){
 
         $q=Auth::$mysqli->query("SELECT * FROM admins WHERE email='". $nombre ."'");
-        if(mysql_num_rows($q) > 0){
+        if($q->num_rows > 0){
             return array("error" => "Ya existe un administrador con ese usuario/email");
         }
 
@@ -69,7 +69,7 @@ class Admin {
     static public function update_admin($id, $nombre, $email, $clave, $permiso_pagos){
 
         $q=Auth::$mysqli->query("SELECT * FROM admins WHERE email='". $nombre ."' AND id<>".$id);
-        if(mysql_num_rows($q) > 0){
+        if($q->num_rows > 0){
             return array("error" => "Ya existe un administrador con ese usuario/email");
         }
 

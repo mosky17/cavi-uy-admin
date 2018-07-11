@@ -26,6 +26,7 @@ class Socio
     public $hash;
     public $direccion;
     public $balance_efectivo;
+    public $tamanio;
 
 
     function __construct($_id,
@@ -41,7 +42,8 @@ class Socio
                          $_activo,
                          $_hash,
                          $_direccion,
-                         $_balance_efectivo
+                         $_balance_efectivo,
+                         $_tamanio
     )
     {
         $this->id = $_id;
@@ -58,6 +60,7 @@ class Socio
         $this->hash = $_hash;
         $this->direccion = $_direccion;
         $this->balance_efectivo = $_balance_efectivo;
+        $this->tamanio = $_tamanio;
     }
 
     static private function mysql_to_instances($result)
@@ -81,7 +84,8 @@ class Socio
                     $row['activo'],
                     $row['hash'],
                     $row['direccion'],
-                    $row['balance_efectivo']
+                    $row['balance_efectivo'],
+                    $row['tamanio']
                 );
 
                 $return[] = $instance;
@@ -150,7 +154,8 @@ class Socio
         $telefono,
         $observaciones,
         $fecha_nacimiento,
-        $direccion
+        $direccion,
+        $tamanio
     )
     {
 
@@ -167,7 +172,7 @@ class Socio
         }
         $tagString = rtrim($tagString, ",");
 
-        $q=Auth::$mysqli->query("INSERT INTO socios (id, numero, nombre, documento, email, fecha_inicio, tags, telefono, observaciones, fecha_nacimiento, direccion) VALUES (" .
+        $q=Auth::$mysqli->query("INSERT INTO socios (id, numero, nombre, documento, email, fecha_inicio, tags, telefono, observaciones, fecha_nacimiento, direccion, tamanio) VALUES (" .
             "null, " .
             htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$numero)) . ", '" .
             htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$nombre)) . "', '" .
@@ -178,8 +183,8 @@ class Socio
             htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$telefono)) . "', '" .
             htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$observaciones)) . "', '" .
             htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_nacimiento)) . "', '" .
-            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$direccion)) .
-            "');");
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$direccion)) . "', " .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tamanio)) .");");
 
         if (Auth::$mysqli->affected_rows == 1) {
             return Auth::$mysqli->insert_id;
@@ -198,7 +203,8 @@ class Socio
                                         $telefono, 
                                         $observaciones, 
                                         $fecha_nacimiento,
-                                        $direccion
+                                        $direccion,
+                                        $tamanio
     ){
 
         //check number
@@ -223,7 +229,8 @@ class Socio
             "', telefono='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$telefono)) .
             "', fecha_nacimiento='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_nacimiento)) .
             "', direccion='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$direccion)) .
-            "', observaciones='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$observaciones)) . "' WHERE id=" . $id);
+            "', tamanio=" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tamanio)) .
+            ", observaciones='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$observaciones)) . "' WHERE id=" . $id);
 
         if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             Log::log("Editar Socio", "Socio #" . $id . " " . $nombre . " editado");

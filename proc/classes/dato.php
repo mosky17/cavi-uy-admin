@@ -54,14 +54,16 @@ class Dato {
         $dato = Dato::get_dato($codigo);
         if(array_key_exists("error",$dato)){
             //dato does not exists
-            $q=Auth::$mysqli->query("INSERT INTO datos (codigo, valor) VALUES ('" . htmlspecialchars(mysql_real_escape_string($codigo)) . "', '" . htmlspecialchars(mysql_real_escape_string($valor)) . "')");
+            $q=Auth::$mysqli->query("INSERT INTO datos (codigo, valor) VALUES ('" .
+                htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$codigo)) . "', '" .
+                htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$valor)) . "')");
             if (mysqli_affected_rows(Auth::$mysqli) == 1) {
                 return array("ok" => true);
             } else {
                 return array("error" => "Dato no modificado");
             }
         }else{
-            $q=Auth::$mysqli->query("UPDATE datos SET valor='" . htmlspecialchars(mysql_real_escape_string($valor)) . "' WHERE codigo='" . htmlspecialchars(mysql_real_escape_string($codigo)) . "'");
+            $q=Auth::$mysqli->query("UPDATE datos SET valor='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$valor)) . "' WHERE codigo='" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$codigo)) . "'");
             if (mysqli_affected_rows(Auth::$mysqli) == 1) {
                 return array("ok" => true);
             } else {

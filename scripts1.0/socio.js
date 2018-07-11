@@ -1,3 +1,8 @@
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
+
 var Socio = {
     Editing: false,
     New: false,
@@ -45,6 +50,7 @@ var Socio = {
         $('#socioNombreTitulo').html('Nuevo Socio');
         $("#socioBtnSalvarContainer").css('display', 'block');
         $('#socioDatosValorNumero').html('<input id="socioNuevoNumero" type="text">');
+        $('#socioDatosValorTamanio').html('<input id="socioNuevoTamanio" type="text">');
         $('#socioDatosValorEmail').html('<input id="socioNuevoEmail" type="text">');
         $('#socioDatosValorDireccion').html('<input id="socioNuevoDireccion" type="text">');
         $('#socioDatosValorDocumento').html('<input id="socioNuevoDocumento" type="text">');
@@ -80,6 +86,7 @@ var Socio = {
                     documento: $('#socioNuevoDocumento').val(),
                     direccion: $('#socioNuevoDireccion').val(),
                     email: $('#socioNuevoEmail').val(),
+                    tamanio: $('#socioNuevoTamanio').val(),
                     telefono: $('#socioNuevoTelefono').val(),
                     fecha_inicio: Toolbox.DataToMysqlDate($('#socioNuevoFechaInicio').val()),
                     tags: tags,
@@ -94,6 +101,7 @@ var Socio = {
                     documento: $('#socioNuevoDocumento').val(),
                     direccion: $('#socioNuevoDireccion').val(),
                     email: $('#socioNuevoEmail').val(),
+                    tamanio: $('#socioNuevoTamanio').val(),
                     telefono: $('#socioNuevoTelefono').val(),
                     fecha_inicio: Toolbox.DataToMysqlDate($('#socioNuevoFechaInicio').val()),
                     tags: tags,
@@ -148,6 +156,9 @@ var Socio = {
             if (!error && $('#socioNuevoFechaNacimiento').val() == '') {
                 error = 'Falt&oacute; especificar fecha de nacimiento';
             }
+            if (!error && $('#socioNuevoTamanio').val() == '') {
+                error = 'Falt&oacute; especificar el tamaño de la empresa';
+            }
         }
 
         if (error == undefined) {
@@ -190,6 +201,7 @@ var Socio = {
                 $("#socioDatosValorFechaInicio").html('<p>' + Toolbox.MysqlDateToDate(data.fecha_inicio) + "</p>");
                 $("#socioDatosValorFechaNacimiento").html('<p>' + Toolbox.MysqlDateToDate(data.fecha_nacimiento) + "</p>");
                 $("#socioDatosValorTelefono").html('<p>' + data.telefono + "</p>");
+                $("#socioDatosValorTamanio").html('<p>' + data.tamanio + "</p>");
                 if (data.observaciones) {
                     $("#socioDatosValorObservaciones").html('<p>' + data.observaciones + "</p>");
                 }
@@ -228,6 +240,7 @@ var Socio = {
         $('#socioDatosValorFechaInicio').html('<input id="socioNuevoFechaInicio" type="text"  placeholder="01/12/2013" value="' + Toolbox.MysqlDateToDate(Socio.SocioData.fecha_inicio) + '">');
         $('#socioDatosValorFechaNacimiento').html('<input id="socioNuevoFechaNacimiento" type="text"  placeholder="01/12/2013" value="' + Toolbox.MysqlDateToDate(Socio.SocioData.fecha_nacimiento) + '">');
         $('#socioDatosValorTags').html('');
+        $('#socioDatosValorTamanio').html('<input id="socioNuevoTamanio" type="text" value="' + Socio.SocioData.tamanio + '">');
         if(Socio.Tags) {
             $.each(Socio.Tags, function (index, value) {
                 $('#socioDatosValorTags').append('<label><input type="checkbox" id="socioNuevoTagChk_' + value.id + '" class="socioNuevoTagChk" name="' + value.id + '"/>' + value.nombre + '</label>');
@@ -250,7 +263,7 @@ var Socio = {
         //calcualte balance horas
         var balance = Number(Socio.BalanceHoras - Socio.DescuentoBalanceHoras);
         if(balance > 0){
-            $('#socioIngresarPagoRazonDescuento').val("BalanceVoluntariado");
+            $('#socioIngresarPagoRazonDescuento').val("Balance");
             var aDescountar = balance;
             if(aDescountar > Socio.CurrentCostoCuota){
                 aDescountar = Socio.CurrentCostoCuota;
@@ -275,7 +288,7 @@ var Socio = {
 
             if(((yearInicio == year && mesInicio <= mes) || yearInicio < year) &&
                 ((yearFin == year && mesFin >= mes) || yearFin > year)){
-                $('#socioIngresarPagoValor').val(Socio.CuotaCostos[i].valor);
+                //$('#socioIngresarPagoValor').val(Socio.CuotaCostos[i].valor);
                 Socio.CurrentCostoCuota = Socio.CuotaCostos[i].valor;
             }
         }
@@ -303,6 +316,10 @@ var Socio = {
             var razonPago = $("#socioIngresarPagoRazon").val();
             if ($("#socioIngresarPagoRazon").val() == "mensualidad") {
                 razonPago = "mensualidad (" + $('#socioIngresarPagoRazonMensualidadMes').val() + "/" + $('#socioIngresarPagoRazonMensualidadAnio').val() + ")";
+            }else if ($("#socioIngresarPagoRazon").val() == "anio") {
+                razonPago = "anio (" + $('#socioIngresarPagoRazonMensualidadAnio').val() + ")";
+            }else if ($("#socioIngresarPagoRazon").val() == "medioanio") {
+                razonPago = "medioanio (" + $('#socioIngresarPagoRazonMensualidadParte').val() + ")";
             }
 
             Toolbox.ShowLoaderModal();
@@ -318,7 +335,8 @@ var Socio = {
                     razon: razonPago, notas: $("#socioIngresarPagoNotas").val(),
                     tipo: $("#socioIngresarPagoTipo").val(),
                     descuento: $("#socioIngresarPagoDescuento").val(),
-                    descuento_json: $("#socioIngresarPagoRazonDescuento").val()
+                    descuento_json: $("#socioIngresarPagoRazonDescuento").val(),
+                    rubro: "Socio"
                 }
             }).done(function (data) {
                 if (data && !data.error) {
@@ -342,7 +360,9 @@ var Socio = {
             error = 'Falt&oacute; especificar el valor del pago';
         } else if (!error && $('#socioIngresarPagoFecha').val() == '') {
             error = 'Falto especificar fecha de pago';
-        } else if (!error && isNaN($('#socioIngresarPagoValor').val())) {
+        } else if (!error && !$('#socioIngresarPagoVia').val()) {
+            error = 'Falto especificar el modo de pago';
+        }else if (!error && isNaN($('#socioIngresarPagoValor').val())) {
             error = 'Valor invalido';
         }
         //else if (!error && $('#socioIngresarPagoRazon').val() == "mensualidad" &&
@@ -373,6 +393,7 @@ var Socio = {
 
                 $('#listaPagosSocioTabla').html("");
                 $('#listaPagosPorMesSocioTabla').html("");
+                Socio.DescuentoBalanceHoras = 0;
 
                 //pagos por mes data
                 var pagosPorMes = {};
@@ -384,12 +405,12 @@ var Socio = {
                     if(data[i].descuento != "" && data[i].descuento != "0.00"){
                         descuento = data[i].descuento + ' ' + Toolbox.TransformSpecialTag(data[i].descuento_json)
 
-                        if(data[i].descuento_json == "BalanceVoluntariado") {
+                        if(data[i].descuento_json == "Balance") {
                             Socio.DescuentoBalanceHoras += Number(data[i].descuento);
                         }
                     }
 
-                    $('#listaPagosSocioTabla').append('<tr onClick="document.location.href = \'/pago.php?id=' + data[i].id + '\'"><td>' + data[i].id + '</td>' +
+                    $('#listaPagosSocioTabla').append('<tr onClick="document.location.href = \'pago.php?id=' + data[i].id + '\'"><td>' + data[i].id + '</td>' +
                         '<td>' + data[i].valor + '</td>' +
                         '<td>' + Toolbox.MysqlDateToDate(data[i].fecha_pago) + '</td>' +
                         '<td>' + Toolbox.TransformSpecialTag(data[i].razon) + '</td>' +
@@ -502,7 +523,7 @@ var Socio = {
                     data: {func: "eliminar_socio", id_socio: Socio.IdSocio}
                 }).done(function (data) {
                     if (data && !data.error) {
-                        document.location.href = "/";
+                        document.location.href = GLOBAL_domain + "/index.php";
                     } else {
                         if (data && data.error) {
                             Toolbox.ShowFeedback('feedbackContainerModalCambiarEstado', 'error', data.error);
@@ -538,10 +559,20 @@ var Socio = {
     TogglePagoRazon: function () {
         if ($('#socioIngresarPagoRazon').val() == "mensualidad") {
             $('#socioIngresarPagoRazonMensualidadMes').css('display', 'block');
+            $('#socioIngresarPagoRazonMensualidadParte').css('display', 'none');
             $('#socioIngresarPagoRazonMensualidadAnio').css('display', 'block');
-        } else {
+        } else if ($('#socioIngresarPagoRazon').val() == "medioanio") {
+            $('#socioIngresarPagoRazonMensualidadMes').css('display', 'none');
+            $('#socioIngresarPagoRazonMensualidadAnio').css('display', 'block');
+            $('#socioIngresarPagoRazonMensualidadParte').css('display', 'block');
+        } else if ($('#socioIngresarPagoRazon').val() == "anio") {
+            $('#socioIngresarPagoRazonMensualidadMes').css('display', 'none');
+            $('#socioIngresarPagoRazonMensualidadAnio').css('display', 'block');
+            $('#socioIngresarPagoRazonMensualidadParte').css('display', 'none');
+        }else {
             $('#socioIngresarPagoRazonMensualidadMes').css('display', 'none');
             $('#socioIngresarPagoRazonMensualidadAnio').css('display', 'none');
+            $('#socioIngresarPagoRazonMensualidadParte').css('display', 'none');
         }
     },
     GetDeudas: function () {
@@ -656,7 +687,7 @@ var Socio = {
             dataType: 'json',
             type: "POST",
             url: "proc/controller.php",
-            data: {func: "get_costos_cuotas"}
+            data: {func: "get_lista_costos"}
         }).done(function (data) {
             if (data && !data.error) {
                 Socio.CuotaCostos = data;
@@ -721,9 +752,9 @@ var Socio = {
                 id_socio: Socio.IdSocio,
                 horas: $("#socioIngresarHorasHoras").val(),
                 created_at: Toolbox.DataToMysqlDate($("#socioIngresarHorasFecha").val()),
-                rubro: $("#socioIngresarHorasRubro").val(),
+                rubro: $("#socioIngresarHorasRazon").val(),
                 costo: $("#socioIngresarHorasCosto").val(),
-                notas: ""
+                notas: $("#socioIngresarHorasDetalle").val()
             }
         }).done(function (data) {
             if (data && !data.error) {
@@ -733,7 +764,7 @@ var Socio = {
                 if (data && data.error) {
                     Toolbox.ShowFeedback('feedbackContainerModalIngresarHoras', 'error', data.error);
                 } else {
-                    Toolbox.ShowFeedback('feedbackContainerModalIngresarHoras', 'error', 'Error al ingresar horas de voluntariado');
+                    Toolbox.ShowFeedback('feedbackContainerModalIngresarHoras', 'error', 'Error al ingresar horas');
                 }
             }
             Toolbox.StopLoaderModal();
@@ -826,7 +857,7 @@ var Socio = {
         });
     },
     OnChangeRazonDescuentoPago: function(){
-        if($('#socioIngresarPagoRazonDescuento').val() == "BalanceVoluntariado"){
+        if($('#socioIngresarPagoRazonDescuento').val() == "Balance"){
             var aDescountar = Number(Socio.BalanceHoras - Socio.DescuentoBalanceHoras);
             if(aDescountar > Socio.CurrentCostoCuota){
                 aDescountar = Socio.CurrentCostoCuota;

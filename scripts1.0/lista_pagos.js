@@ -1,9 +1,6 @@
 /**
- * Created with JetBrains PhpStorm.
- * User: Martin
- * Date: 07/07/13
- * Time: 10:28 PM
- * To change this template use File | Settings | File Templates.
+ * Coded by Mosky
+ * https://github.com/mosky17
  */
 
 var ListaPagos = {
@@ -19,36 +16,9 @@ var ListaPagos = {
         }).done(function (data) {
             if (data && !data.error) {
 
-
-                $('#macropago_tabla_socios').html('<tr><td class="right"><input onchange="ListaPagos.MacroPagoSeleccionarTodosChanged();" type="checkbox" class="macropago_socio_chk" id="macropago_socio_todos">' +
-                    '<label class="macropago_socio_label" for="macropago_socio_todos"><b>Seleccionar todos</b></label></td></tr>');
-                var html = "";
-                var countCols = 1;
-
                 ListaPagos.ListaSocios = {};
                 for (var i = 0; i < data.length; i++) {
                     ListaPagos.ListaSocios[data[i].id] = data[i];
-
-                    if (countCols == 1) {
-                        html += '<tr><td class="right">';
-                    } else {
-                        html += '<td class="left">';
-                    }
-
-                    html += '<input type="checkbox" class="macropago_socio_chk" id="macropago_socio_' + data[i].id + '">' +
-                        '<label class="macropago_socio_label" for="macropago_socio_' + data[i].id + '">' + data[i].nombre + '</label></td>';
-
-                    if (countCols == 2) {
-                        html += '</tr>';
-                        $('#macropago_tabla_socios').append(html);
-                        html = "";
-                        countCols = 0;
-                    } else if (i == data.length - 1) {
-                        html += '<td></td></tr>';
-                        $('#macropago_tabla_socios').append(html);
-                    }
-
-                    countCols += 1;
                 }
 
                 ListaPagos.LoadListaPagos();
@@ -77,6 +47,10 @@ var ListaPagos = {
                 $('#listaPagosTabla').html("");
 
                 for (var i = 0; i < data.length; i++) {
+
+                    if(data[i].id_socio == 0) {
+                    continue;
+                    }
 
                     var tagCancelado = "";
                     if (data[i].cancelado == true) {
@@ -135,11 +109,11 @@ var ListaPagos = {
                         }
                     }
 
-                $('#listaMesesInpagosTabla').html("");
-                for (var i = 0; i < inpagosData.length; i++) {
-                    $('#listaMesesInpagosTabla').append('<tr><td>' + inpagosData[i].mes + '</td>' +
-                        '<td>' + inpagosData[i].nombre + '</td></tr>');
-                }
+                // $('#listaMesesInpagosTabla').html("");
+                // for (var i = 0; i < inpagosData.length; i++) {
+                //     $('#listaMesesInpagosTabla').append('<tr><td>' + inpagosData[i].mes + '</td>' +
+                //         '<td>' + inpagosData[i].nombre + '</td></tr>');
+                // }
 
             } else {
                 if (data && data.error) {
@@ -281,7 +255,7 @@ var ListaPagos = {
                 dataType: 'json',
                 type: "POST",
                 url: "proc/controller.php",
-                data: {func: "borrar_cuota_costo", id: id}
+                data: {func: "borrar_costo", id: id}
             }).done(function (data) {
                 if (data && !data.error) {
 
@@ -306,7 +280,7 @@ var ListaPagos = {
             dataType: 'json',
             type: "POST",
             url: "proc/controller.php",
-            data: {func: "get_costos_cuotas"}
+            data: {func: "get_lista_costos"}
         }).done(function (data) {
             if (data && !data.error) {
                 $('#listaCostoCuotasTabla').html("");

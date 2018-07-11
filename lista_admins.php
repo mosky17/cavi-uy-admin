@@ -11,7 +11,7 @@ if (Auth::access_level() < 0) {
 <?php } else { ?>
 
     <head>
-        <script src="scripts1.0.12/admins.js"></script>
+        <script src="scripts1.0/admins.js"></script>
     </head>
 
     <body>
@@ -29,7 +29,7 @@ if (Auth::access_level() < 0) {
             </thead>
             <tbody class="tabla-admins"></tbody>
         </table>
-        <div class="btn btn-success pull-right" onclick="Admins.OpenModalNuevoAdmin();">Crear Administrador</div>
+        <div class="btn btn-success" style="float: right;" onclick="Admins.OpenModalNuevoAdmin();">Crear Administrador</div>
 
         <br><br>
 
@@ -43,60 +43,69 @@ if (Auth::access_level() < 0) {
     </div>
 
     <!-- Modal admin -->
-    <div id="adminsDatosModal" class="modal hide fade" tabindex="-1" role="dialog"
-         aria-labelledby="adminsDatosModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3 id="adminsDatosModalLabel">Nuevo Administrador</h3>
-        </div>
-        <div class="modal-body">
-            <div id="adminsDatosModalFeedback" class="feedbackContainerModal"></div>
-            <table>
-                <tr>
-                    <td>Nombre</td>
-                    <td><input type="text" class="admin_datos_nombre"></td>
-                </tr>
-                <tr>
-                    <td>Email/Usuario</td>
-                    <td><input type="text" class="admin_datos_email"></td>
-                </tr>
-                <tr>
-                    <td>Clave</td>
-                    <td><input type="password" class="admin_datos_clave"></td>
-                </tr>
-                <tr>
-                    <td>Repetir Clave</td>
-                    <td><input type="password" class="admin_datos_clave2"></td>
-                </tr>
-            </table>
-        </div>
-        <div class="modal-footer">
-            <img src="images/loaderModal.gif" class="loaderModal">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
-            <button id="adminsDatosModalBtnSalvar" class="btn btn-primary">Salvar</button>
+    <div id="adminsDatosModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cerrar Caja</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="adminsDatosModalFeedback" class="feedbackContainerModal"></div>
+                    <table>
+                        <tr>
+                            <td>Nombre</td>
+                            <td><input type="text" class="admin_datos_nombre"></td>
+                        </tr>
+                        <tr>
+                            <td>Email/Usuario</td>
+                            <td><input type="text" class="admin_datos_email"></td>
+                        </tr>
+                        <tr>
+                            <td>Clave</td>
+                            <td><input type="password" class="admin_datos_clave"></td>
+                        </tr>
+                        <tr>
+                            <td>Repetir Clave</td>
+                            <td><input type="password" class="admin_datos_clave2"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <img src="images/loaderModal.gif" class="loaderModal">
+                    <button type="button" class="btn btn-primary" id="adminsDatosModalBtnSalvar">Salvar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Modal cerrar caja -->
-    <div id="adminsCerrarCajaModal" class="modal hide fade" tabindex="-1" role="dialog"
-         aria-labelledby="adminsCerrarCajaModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3>Cerrar Caja</h3>
-        </div>
-        <div class="modal-body">
-            <div id="adminsCerrarCajaModalFeedback" class="feedbackContainerModal"></div>
-            <table>
-                <tr>
-                    <td>Hasta la fecha</td>
-                    <td><input type="text" class="admin_cerrar_caja_fecha"></td>
-                </tr>
-            </table>
-        </div>
-        <div class="modal-footer">
-            <img src="images/loaderModal.gif" class="loaderModal">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
-            <button class="btn btn-primary" onclick="Admins.SalvarCerrarCaja();">Salvar</button>
+    <div id="adminsCerrarCajaModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cerrar Caja</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="adminsCerrarCajaModalFeedback" class="feedbackContainerModal"></div>
+                    <table>
+                        <tr>
+                            <td>Hasta la fecha</td>
+                            <td><input type="text" class="admin_cerrar_caja_fecha"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="Admins.SalvarCerrarCaja();">Actualizar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
         </div>
     </div>
 

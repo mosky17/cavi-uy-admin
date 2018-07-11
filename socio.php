@@ -65,9 +65,9 @@ if (Auth::access_level() < 0) {
                             <div id="socioDatosValorEmail" class="socioDatosValor"></div>
                         </div></td>
                     <td><div class="socioDatosField">
-                            <h4>Tags</h4>
+                            <h4>Dirección</h4>
 
-                            <div id="socioDatosValorTags" class="socioDatosValor"></div>
+                            <div id="socioDatosValorDireccion" class="socioDatosValor"></div>
                         </div></td>
                 </tr>
                 <tr>
@@ -89,10 +89,18 @@ if (Auth::access_level() < 0) {
                             <div id="socioDatosValorTelefono" class="socioDatosValor"></div>
                         </div></td>
                     <td><div class="socioDatosField">
-                            <h4>Dirección</h4>
+                            <h4>Tags</h4>
 
-                            <div id="socioDatosValorDireccion" class="socioDatosValor"></div>
+                            <div id="socioDatosValorTags" class="socioDatosValor"></div>
                         </div></td>
+                </tr>
+                <tr>
+                    <td><div class="socioDatosField">
+                            <h4>Tamaño</h4>
+
+                            <div id="socioDatosValorTamanio" class="socioDatosValor"></div>
+                        </div></td>
+                    <td></td>
                 </tr>
             </table>
             <div style="display:none;" class="span12" id="socioBtnSalvarContainer">
@@ -111,17 +119,9 @@ if (Auth::access_level() < 0) {
                 Agregar Deuda
             </div>
             <div class="btn" style="
-            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff670f+0,d8610d+100 */
 background: #ff670f; /* Old browsers */
-background: -moz-linear-gradient(top, #ff670f 0%, #d8610d 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(top, #ff670f 0%,#d8610d 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to bottom, #ff670f 0%,#d8610d 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', endColorstr='#d8610d',GradientType=0 ); /* IE6-9 */
-    color: #fff;
-    border: 1px solid #ff670f;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
-            " title="Nuevo talon CobrosYA" onclick="Socio.OpenModalNuevoTalonCobrosYA();">
-                Nuevo talon CobrosYA
+    color: #fff;" title="Nuevo talón CobrosYA" onclick="Socio.OpenModalNuevoTalonCobrosYA();">
+                Nuevo talón CobrosYA
             </div>
         </div>
 
@@ -139,7 +139,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', end
                         <th>Raz&oacute;n</th>
                         <th>Descuento $</th>
                         <th>Notas</th>
-                        <th>Tipo</th>
+                        <th>Modo</th>
                     </tr>
                     </thead>
                     <tbody id="listaPagosSocioTabla"></tbody>
@@ -168,27 +168,33 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', end
         </div>
 
         <!--Pagos por mes-->
-        <h3 class="socioPagoseTitulo">Pagos ordenados por mes</h3>
-
-        <div class="box row-fluid">
-            <div class="span12 socioListaContenedor">
-                <table class="table table-hover table-striped">
-                    <thead>
-                    <tr>
-                        <th>Mes</th>
-                        <th>Total Pago $</th>
-                        <th>Total Descuento $</th>
-                        <th>Total Mes $</th>
-                    </tr>
-                    </thead>
-                    <tbody id="listaPagosPorMesSocioTabla"></tbody>
-                </table>
-            </div>
-        </div>
+<!--        <h3 class="socioPagoseTitulo">Pagos ordenados por mes</h3>-->
+<!---->
+<!--        <div class="box row-fluid">-->
+<!--            <div class="span12 socioListaContenedor">-->
+<!--                <table class="table table-hover table-striped">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>Mes</th>-->
+<!--                        <th>Total Pago $</th>-->
+<!--                        <th>Total Descuento $</th>-->
+<!--                        <th>Total Mes $</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody id="listaPagosPorMesSocioTabla"></tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
 
 
     <!--Horas-->
     <h3 id="socioEntregasTitulo">Trabajo por descuento</h3>
+
+        <div class="botoneraTopContainer">
+            <div class="btn btn-success" title="Ingresar horas de trabajo" onclick="Socio.OpenModalIngresarHoras();">Agregar
+                Horas
+            </div>
+        </div>
 
     <div class="box row-fluid">
         <div class="span12 socioListaContenedor">
@@ -206,12 +212,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', end
             </table>
         </div>
     </div>
-    <div class="botoneraBottomContainer">
-        <div class="btn btn-success" title="Ingresar horas de coluntariado" onclick="Socio.OpenModalIngresarHoras();">Agregar
-            Horas
-        </div>
+
     </div>
-        </div>
 
     <!-- Modal nuevo talon CobrosYA -->
     <div id="socioNuevoTalonCobrosYAModal" class="modal hide fade" tabindex="-1" role="dialog"
@@ -257,49 +259,54 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', end
         </div>
     </div>
 
-    <!-- Modal ingresar horas -->
-    <div id="socioIngresarHorasModal" class="modal hide fade" tabindex="-1" role="dialog"
-         aria-labelledby="socioIngresarHorasModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3 id="socioIngresarHorasModalLabel">Ingresar Horas</h3>
-        </div>
-        <div class="modal-body">
-            <div id="feedbackContainerModalIngresarHoras" class="feedbackContainerModal"></div>
-            <div class="modalListaRow">
-                <h4>Rubro</h4>
-                <select id="socioIngresarHorasRubro">
-                    <option value="Manicura">Manicura</option>
-                    <option value="Reparto">Reparto</option>
-                    <option value="Embolsado">Embolsado</option>
-                    <option value="Administracion">Administraci&oacute;n</option>
-                    <option value="Edilicio">Edilicio</option>
-                    <option value="Otro">Otro</option>
-                </select>
-            </div>
-            <div class="modalListaRow">
-                <div>
-                    <h4>Fecha</h4>
-                    <input type="text" placeholder="" id="socioIngresarHorasFecha" style="width:130px;">
+    <div id="socioIngresarHorasModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ingresar horas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="feedbackContainerModalIngresarHoras" class="feedbackContainerModal"></div>
+                    <div class="modalListaRow">
+                        <h4>Rubro</h4>
+                        <select id="socioIngresarHorasRazon">
+                            <option value="Administracion">Administración</option>
+                            <option value="Comunicacion">Comunicación</option>
+                            <option value="Soporte">Soporte</option>
+                            <option value="Eventos">Eventos</option>
+                            <option value="Relaciones Publicas">Relaciones Publicas</option>
+                        </select>
+                    </div>
+                    <div class="modalListaRow">
+                        <div>
+                            <h4>Detalle</h4>
+                            <input type="text" placeholder="" id="socioIngresarHorasDetalle" style="width:230px;">
+                        </div>
+                    </div>
+                    <div class="modalListaRow">
+                        <div>
+                            <h4>Fecha</h4>
+                            <input type="text" placeholder="" id="socioIngresarHorasFecha" style="width:130px;">
+                        </div>
+                    </div>
+                    <div class="modalListaRow">
+                        <h4>Horas</h4>
+                        <input style="width: 110px;" type="text" placeholder="0.0" id="socioIngresarHorasHoras">
+                    </div>
+                    <div class="modalListaRow">
+                        <h4>Costo/Hora</h4>
+                        <input style="width: 110px;" type="text" placeholder="0.0" id="socioIngresarHorasCosto">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <img src="images/loaderModal.gif" class="loaderModal">
+                    <button type="button" class="btn btn-primary" onclick="Socio.IngresarHoras()">Ingresar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
-            <div class="modalListaRow">
-                <h4>Horas</h4>
-                <input style="width: 110px;" type="text" placeholder="0.0" id="socioIngresarHorasHoras">
-            </div>
-            <div class="modalListaRow">
-                <h4>Costo/Hora</h4>
-                <select id="socioIngresarHorasCosto">
-                    <option value="225">$225</option>
-                    <option value="200">$200</option>
-                    <option value="175">$175</option>
-                    <option value="100">$100</option>
-                </select>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <img src="images/loaderModal.gif" class="loaderModal">
-            <button id="socioIngresarHorasModalBtnIngresar" class="btn btn-primary">Ingresar</button>
         </div>
     </div>
 
@@ -318,11 +325,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', end
                     <div class="modalListaRow">
                         <h4>Raz&oacute;n</h4>
                         <select id="socioIngresarPagoRazon" onchange="Socio.TogglePagoRazon();">
-                            <option value="mensualidad">Mensualidad</option>
                             <option value="medioanio">Semestre</option>
                             <option value="anio">Año</option>
+                            <option value="mensualidad">Mensualidad</option>
                         </select>
-                        <select id="socioIngresarPagoRazonMensualidadMes">
+                        <select id="socioIngresarPagoRazonMensualidadMes" style="display: none;">
                             <option value="Enero">Enero</option>
                             <option value="Febrero">Febrero</option>
                             <option value="Marzo">Marzo</option>
@@ -399,52 +406,62 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff670f', end
     </div>
 
     <!-- Modal ingresar deuda -->
-    <div id="socioIngresarDeudaModal" class="modal hide fade" tabindex="-1" role="dialog"
-         aria-labelledby="socioIngresarDeudaModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3 id="socioIngresarDeudaModalLabel">Ingresar Deuda</h3>
-        </div>
-        <div class="modal-body">
-            <div id="feedbacksocioIngresarDeudaModal" class="feedbackContainerModal"></div>
-            <div class="modalListaRow">
-                <h4>Monto $</h4>
-                <input style="width: 110px;" type="text" placeholder="0.00" id="socioIngresarDeudaMonto">
+    <div id="socioIngresarDeudaModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ingresar Deuda</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="feedbacksocioIngresarDeudaModal" class="feedbackContainerModal"></div>
+                    <div class="modalListaRow">
+                        <h4>Monto $</h4>
+                        <input style="width: 110px;" type="text" placeholder="0.00" id="socioIngresarDeudaMonto">
+                    </div>
+                    <div class="modalListaRow">
+                        <h4>Raz&oacute;n</h4>
+                        <textarea id="socioIngresarDeudaRazon"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <img src="images/loaderModal.gif" class="loaderModal">
+                    <button type="button" class="btn btn-primary" onclick="Socio.IngresarDeuda();">Ingresar deuda</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
-            <div class="modalListaRow">
-                <h4>Raz&oacute;n</h4>
-                <textarea id="socioIngresarDeudaRazon"></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <img src="images/loaderModal.gif" class="loaderModal">
-            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
-            <button class="btn btn-primary" onclick="Socio.IngresarDeuda();">Ingresar</button>
         </div>
     </div>
 
     <!-- Modal cambiar estado -->
-    <div id="socioCambiarEstadoModal" class="modal hide fade" tabindex="-1" role="dialog"
-         aria-labelledby="socioCambiarEstadoModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3 id="socioCambiarEstadoModalLabel">Editar Estado de Socio</h3>
-        </div>
-        <div class="modal-body">
-            <div id="feedbackContainerModalCambiarEstado" class="feedbackContainerModal"></div>
-            <div class="modalListaRow">
-                <h4>Nuevo Estado</h4>
-                <select id="socioEditarEstado">
-                    <option value="activo">Activo</option>
-                    <option value="suspendido">Suspendido</option>
-                    <option value="eliminar">Eliminar Socio</option>
-                </select>
+    <div id="socioCambiarEstadoModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Actualizar estado de socio</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="feedbackContainerModalCambiarEstado" class="feedbackContainerModal"></div>
+                    <div class="modalListaRow">
+                        <h4>Estado</h4>
+                        <select id="socioEditarEstado">
+                            <option value="activo">Activo</option>
+                            <option value="suspendido">Suspendido</option>
+                            <option value="eliminar">Eliminar Socio</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <img src="images/loaderModal.gif" class="loaderModal">
+                    <button type="button" class="btn btn-primary" onclick="Socio.CambiarEstadoSocio();">Actualizar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <img src="images/loaderModal.gif" class="loaderModal">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
-            <button id="socioCambiarEstadoModalBtnCambiar" class="btn btn-primary">Cambiar</button>
         </div>
     </div>
 

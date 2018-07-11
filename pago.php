@@ -1,10 +1,7 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: Martin
- * Date: 08/07/13
- * Time: 10:49 PM
- * To change this template use File | Settings | File Templates.
+ * Coded by Mosky
+ * https://github.com/mosky17
  */
 
 require_once(dirname(__FILE__) . '/layout.php');
@@ -18,7 +15,7 @@ if (Auth::access_level() < 0) {
 <?php } else { ?>
 
     <head>
-        <script src="scripts1.0.12/pago.js"></script>
+        <script src="scripts1.0/pago.js"></script>
     </head>
 
     <body>

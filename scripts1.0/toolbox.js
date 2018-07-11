@@ -21,7 +21,7 @@ var Toolbox = {
     },
     UpdateActiveNavbar: function (active) {
             $('#headerNavigation').css('display', 'block');
-            $('.nav_lista_link').removeClass('active');
+            $('.nav-link').removeClass('active');
         if(active && active != "") {
             $('#' + active).addClass('active');
         }
@@ -124,82 +124,65 @@ var Toolbox = {
             text = "mensualidad";
         }
 
+        if(text.indexOf("anio")==0){
+            text2 = text.substring(6, text.length -1);
+            text = "anio";
+        }
+
+        if(text.indexOf("medioanio")==0){
+            text2 = text.substring(11, text.length -1);
+            text = "medioanio";
+        }
+
         switch (text) {
             case "matricula":
-                return '<span class="label" style="background-color:#A8BB19;">Matr&iacutecula</span>';
+                return '<span class="badge" style="background-color:#A8BB19;">Matr&iacutecula</span>';
+                break;
+            case "anio":
+                return '<span class="badge badge-success">Anualidad ' + text2 + '</span>';
+                break;
+            case "medioanio":
+                return '<span class="badge badge-warning">Semestre ' + text2 + '</span>';
                 break;
             case "mensualidad":
-                return '<span class="label" style="background-color:#2E5894;">' + text2 + '</span>';
-                break;
-            case "transferencia_brou":
-                return '<span class="label" style="background-color:#72A0C1;">BROU</span>';
+                return '<span class="badge" style="background-color:#2E5894;">' + text2 + '</span>';
                 break;
             case "CobrosYA":
-                return '<span class="label" style="background-color:#FF5722;">CobrosYA</span>';
+                return '<span class="badge" style="background-color:#FF5722;">CobrosYA</span>';
                 break;
             case "personalmente":
-                return '<span class="label" style="background-color:#C46210;">En Persona</span>';
+                return '<span class="badge badge-danger">En Persona</span>';
                 break;
 
             //descuentos
-            case "Voluntariado":
-                return '<span class="label label-success" style="">Voluntariado</span>';
-                break;
-            case "BalanceVoluntariado":
-                return '<span class="label label-success" style="">Voluntariado</span>';
+            case "Balance":
+                return '<span class="badge badge-primary" style="">Balance</span>';
                 break;
 
             //rubros pagos
-            case "Cultivo":
-                return '<span class="label label-success" style="background-color:#1ba400;">Cultivo</span>';
-                break;
-            case "Energia":
-                return '<span class="label label-warning" style="">Energ&iacute;a</span>';
-                break;
-            case "Equipamiento":
-                return '<span class="label label-danger" style="background-color:#bf0000;">Equipamiento</span>';
-                break;
-            case "Instalaciones":
-                return '<span class="label label-danger" style="background-color:#d91e88;">Instalaciones</span>';
-                break;
             case "Administracion":
-                return '<span class="label" style="background-color:#e35000;">Administraci&oacute;n</span>';
+                return '<span class="badge badge-info">Administraci&oacute;n</span>';
                 break;
             case "Administraci&oacute;n":
-                return '<span class="label" style="background-color:#e35000;">Administraci&oacute;n</span>';
+                return '<span class="badge badge-info">Administraci&oacute;n</span>';
                 break;
-            case "Jardineros":
-                return '<span class="label" style="background-color:#1e1e1e;">Jardineros</span>';
+            case "Soporte":
+                return '<span class="badge badge-primary">Soporte</span>';
                 break;
-            case "Locacion":
-                return '<span class="label label-primary" style="background-color:#004098;">Locaci&oacute;n</span>';
+            case "Eventos":
+                return '<span class="badge badge-warning">Eventos</span>';
                 break;
             case "Edilicio":
                 return '<span class="label label-primary" style="background-color:#004098;">Edilicio</span>';
                 break;
             case "Transporte":
-                return '<span class="label label-info" style="">Transporte</span>';
-                break;
-            case "Embolsado":
-                return '<span class="label label-info" style="">Embolsado</span>';
+                return '<span class="badge badge-success" style="">Transporte</span>';
                 break;
             case "Otro":
-                return '<span class="label label-default">Otro</span>';
+                return '<span class="badge badge-secondary">Otro</span>';
                 break;
             case "Devoluciones":
-                return '<span class="label label-default">Devoluciones</span>';
-                break;
-            case "Limpieza":
-                return '<span class="label" style="background-color:#75f7ff;">Limpieza</span>';
-                break;
-            case "Manicura":
-                return '<span class="label" style="background-color:#C46210;">Manicura</span>';
-                break;
-            case "Seguridad":
-                return '<span class="label" style="background-color:#ff75dd;">Seguridad</span>';
-                break;
-            case "Reparto":
-                return '<span class="label" style="background-color:#ff75dd;">Reparto</span>';
+                return '<span class="badge badge-secondary">Devoluciones</span>';
                 break;
             //ELSE
             default:

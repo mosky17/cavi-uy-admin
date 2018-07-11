@@ -1,9 +1,6 @@
 /**
- * Created with JetBrains PhpStorm.
- * User: Martin
- * Date: 03/08/13
- * Time: 07:12 PM
- * To change this template use File | Settings | File Templates.
+ * Coded by Mosky
+ * https://github.com/mosky17
  */
 
 var ListaGastos = {
@@ -17,11 +14,15 @@ var ListaGastos = {
             dataType: 'json',
             type: "POST",
             url: "proc/controller.php",
-            data: { func: "get_lista_gastos" }
+            data: { func: "get_lista_pagos" }
         }).done(function (data) {
                 if (data && !data.error) {
                     $('#listaGastosTabla').html("");
                     for (var i = 0; i < data.length; i++) {
+
+                        if(Number(data[i].valor) == 0){
+                            continue;
+                        }
 
                         var tagCancelado = "";
                         if(data[i].cancelado==true){
@@ -29,18 +30,21 @@ var ListaGastos = {
                         }
 
                         var valor = Number(data[i].valor).toFixed(2);
-                        var haber = '<i class="icon icon-arrow-right green-arrow"></i>';
-                        if(valor > 0){
-                            haber = '<i class="icon icon-arrow-left red-arrow"></i>';
-                        }else{
-                            valor = valor * -1;
+                        var haber = '<i class="fa fa-arrow-right green-arrow"></i>';
+                        if(valor < 0){
+                            haber = '<i class="fa fa-arrow-left red-arrow"></i>';
+                        }
+
+                        var razon = data[i].razon;
+                        if(data[i].rubro == "Socio") {
+                            razon = "Ingreso socio: " + Toolbox.TransformSpecialTag(data[i].razon);
                         }
 
                         $('#listaGastosTabla').append('<tr onClick="document.location.href = \'gasto.php?id=' + data[i].id + '\'"><td>' + data[i].id + '</td>' +
                             '<td>' + valor + '</td>' +
                             '<td>' + haber + '</td>' +
                             '<td>' + Toolbox.MysqlDateToDate(data[i].fecha_pago) + '</td>' +
-                            '<td>' + data[i].razon + '</td>' +
+                            '<td>' + razon + '</td>' +
                             '<td>' + Toolbox.TransformSpecialTag(data[i].rubro) + '</td>' +
                             '<td>' + tagCancelado + data[i].notas + '</td></tr>');
                     }
@@ -61,7 +65,7 @@ var ListaGastos = {
         if (ListaGastos.VerificarDatosGasto()) {
 
             var valor = $("#listaIngresarGastoValor").val();
-            if(ListaGastos.CreandoHaber){
+            if(!ListaGastos.CreandoHaber){
                 valor = valor*-1;
             }
 
@@ -72,10 +76,17 @@ var ListaGastos = {
                 dataType: 'json',
                 type: "POST",
                 url: "proc/controller.php",
-                data: { func: "ingresar_gasto", valor: valor,
+                data: { func: "ingresar_pago",
+                    id_socio: 0,
+                    valor: valor,
                     fecha_pago: Toolbox.DataToMysqlDate($("#listaIngresarGastoFecha").val()),
-                    razon: $("#listaIngresarGastoRazon").val(), notas: $("#listaIngresarGastoNotas").val(),
-                    rubro: rubro}
+                    razon: $("#listaIngresarGastoRazon").val(),
+                    tipo: "",
+                    notas: $("#listaIngresarGastoNotas").val(),
+                    descuento: 0,
+                    descuento_json: "",
+                    rubro: rubro
+                }
             }).done(function (data) {
                     if (data && !data.error) {
                         ListaGastos.LoadListaGastos();
@@ -84,10 +95,11 @@ var ListaGastos = {
                         if (data && data.error) {
                             Toolbox.ShowFeedback('feedbackContainerModalIngresarGasto', 'error', data.error);
                         } else {
-                            Toolbox.ShowFeedback('feedbackContainerModalIngresarGasto', 'error', 'Unexpected error');
+                            Toolbox.ShowFeedback('feedbackContainerModalIngresarGasto', 'error', 'Error inesperado');
                         }
                     }
                     Toolbox.StopLoaderModal();
+                    ListaGastos.GetTotales();
                 });
         }
     },
@@ -168,11 +180,10 @@ var ListaGastos = {
 
 $(document).ready(function () {
 
-    Toolbox.UpdateActiveNavbar('nav_lista_gastos');
+    Toolbox.UpdateActiveNavbar('nav_lista_caja');
 
     ListaGastos.LoadListaGastos();
 
-    $('#listaIngresarGastoModalBtnIngresar').on('click', ListaGastos.IngresarGasto);
     $("#listaIngresarGastoFecha").mask("99/99/9999");
 
     ListaGastos.GetTotales();

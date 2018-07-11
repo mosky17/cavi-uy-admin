@@ -23,6 +23,7 @@ class Pago
     public $cancelado;
     public $descuento;
     public $descuento_json;
+    public $rubro;
 
     function __construct(
         $id, 
@@ -34,7 +35,8 @@ class Pago
         $notas, 
         $cancelado, 
         $descuento, 
-        $descuento_json
+        $descuento_json,
+        $rubro
     ){
         $this->id = $id;
         $this->id_socio = $id_socio;
@@ -46,6 +48,7 @@ class Pago
         $this->cancelado = $cancelado;
         $this->descuento = $descuento;
         $this->descuento_json = $descuento_json;
+        $this->rubro = $rubro;
     }
 
     static private function mysql_to_instances($result)
@@ -53,8 +56,8 @@ class Pago
         $return = array();
         if ($result) {
             while ($row = mysqli_fetch_array($result)) {
-                $instance = new Pago($row['id'], $row['id_socio'], $row['fecha_pago'], $row['razon'], $row['valor'], $row['tipo'],
-                    $row['notas'], $row['cancelado'], $row['descuento'], $row['descuento_json']);
+                $instance = new Pago($row['id'], $row['id_socio'], $row['fecha_pago'], $row['razon'], $row['valor'], $row['modo'],
+                    $row['notas'], $row['cancelado'], $row['descuento'], $row['descuento_json'], $row['rubro']);
                 $return[] = $instance;
             }
         }
@@ -123,18 +126,38 @@ class Pago
         return Pago::mysql_to_instances($q);
     }
 
-    static public function ingresar_pago($id_socio, $valor, $fecha_pago, $razon, $tipo, $notas, $descuento, $descuento_json)
-    {
+    static public function ingresar_pago(
+        $id_socio,
+        $valor,
+        $fecha_pago,
+        $razon,
+        $tipo,
+        $notas,
+        $descuento,
+        $descuento_json,
+        $rubro
+    ){
 
         if (Dato::verificar_movimiento_caja($fecha_pago) !== true) {
             return array("error" => "Caja cerrada! No se pueden ingresar movimientos en esta fecha.");
         }
 
-        $q=Auth::$mysqli->query("INSERT INTO pagos (id_socio, valor, fecha_pago, razon, descuento, descuento_json, tipo, notas) VALUES (" .
-            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$id_socio)) . ", '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$valor)) . "', '" .
-            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_pago)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$razon)) . "', '" .
-            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$descuento)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$descuento_json)) . "', '" .
-            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tipo)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$notas)) . "');");
+        $q=Auth::$mysqli->query("INSERT INTO pagos (id_socio, valor, fecha_pago, razon, descuento, descuento_json, modo, notas, rubro) VALUES (" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$id_socio)) . ", '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$valor)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_pago)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$razon)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$descuento)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$descuento_json)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tipo)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$notas)) . "', '" .
+            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$rubro)) . "');");
+
+//        echo "INSERT INTO pagos (id_socio, valor, fecha_pago, razon, descuento, descuento_json, modo, notas) VALUES (" .
+//            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$id_socio)) . ", '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$valor)) . "', '" .
+//            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$fecha_pago)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$razon)) . "', '" .
+//            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$descuento)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$descuento_json)) . "', '" .
+//            htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$tipo)) . "', '" . htmlspecialchars(mysqli_real_escape_string(Auth::$mysqli,$notas)) . "');";
 
         if (mysqli_affected_rows(Auth::$mysqli) == 1) {
             return true;
@@ -142,5 +165,29 @@ class Pago
             return array("error" => "Error al ingresar pago");
         }
     }
+
+    static public function get_totales(){
+
+        $retorno = array("ingresos_socios"=>0,
+            "otros_ingresos"=>0,
+            "gastos"=>0);
+
+        $pagos = Pago::get_lista_pagos();
+
+        for($i=0;$i<count($pagos);$i++){
+            if($pagos[$i]->valor < 0){
+                $retorno["gastos"] += $pagos[$i]->valor * -1;
+            }else{
+                if($pagos[$i]->rubro == "Socio") {
+                    $retorno["ingresos_socios"] += $pagos[$i]->valor;
+                }else{
+                    $retorno["otros_ingresos"] += $pagos[$i]->valor;
+                }
+            }
+        }
+
+        return $retorno;
+    }
+
 
 }

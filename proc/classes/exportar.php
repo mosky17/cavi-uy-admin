@@ -5,6 +5,7 @@
  */
 
 require_once(dirname(__FILE__) . '/auth.php');
+require_once(dirname(__FILE__) . '/pago.php');
 require_once(dirname(__FILE__).'/../../config.php');
 
 Auth::connect();
@@ -82,60 +83,49 @@ class Exportar {
     static public function exportar_caja(){
         $fechaArchivo = date('Y-m-d');
         header("Content-type: text/csv");
-        header("Content-Disposition: attachment; filename=Caja_CSC-".$fechaArchivo.".csv");
+        header("Content-Disposition: attachment; filename=Caja_CAVI-".$fechaArchivo.".csv");
         header("Pragma: no-cache");
         header("Expires: 0");
 
-        $array = array(array("Fecha", "Concepto", "# de socio", "Nombre", "Debe ($)", "Haber ($)","Saldo ($)", "Notas", "Rubro"));
+        $array = array(array("Fecha", "Rubro", "Detalle", "Debe ($)", "Haber ($)","Saldo ($)"));
 
-        $gastos = Gasto::get_lista_gastos();
-        $resultPagos = mysql_query("SELECT * FROM pagos p, socios s WHERE p.id_socio = s.id AND p.cancelado=0 ORDER BY p.fecha_pago");
-
-        $indexGastos = 0;
-        $rowResultPagos = mysqli_fetch_array($resultPagos);
+        $pagos = Pago::get_lista_pagos();
         $saldo = 0;
 
-        while($indexGastos < count($gastos) || $rowResultPagos){
-            if($rowResultPagos && $indexGastos < count($gastos)){
-                if(strcmp($rowResultPagos['fecha_pago'],$gastos[$indexGastos]->fecha_pago) > 0){
-                    $saldo -= round($gastos[$indexGastos]->valor);
-                    if($gastos[$indexGastos]->valor>0){
-                        //gasto
-                        $array[] = array($gastos[$indexGastos]->fecha_pago, Exportar::sacarTildes($gastos[$indexGastos]->razon), "", "",
-                            "", round($gastos[$indexGastos]->valor), $saldo , '"'.Exportar::sacarTildes($gastos[$indexGastos]->notas).'"', '"'.Exportar::sacarTildes($gastos[$indexGastos]->rubro).'"');
-                    }else{
-                        //haber
-                        $array[] = array($gastos[$indexGastos]->fecha_pago, Exportar::sacarTildes($gastos[$indexGastos]->razon), "", "",
-                            round($gastos[$indexGastos]->valor*-1), "", $saldo , '"'.Exportar::sacarTildes($gastos[$indexGastos]->notas).'"', '"'.Exportar::sacarTildes($gastos[$indexGastos]->rubro).'"');
-                    }
+        for($i = count($pagos)-1;$i>=0;$i--){
 
-                    $indexGastos += 1;
-                }else{
-                    $saldo += round($rowResultPagos['valor']);
-                    $array[] = array($rowResultPagos['fecha_pago'], Exportar::sacarTildes($rowResultPagos['razon']), $rowResultPagos['numero'],
-                        Exportar::sacarTildes($rowResultPagos['nombre']), round($rowResultPagos['valor']), "", $saldo , '"'.Exportar::sacarTildes($rowResultPagos['notas']).'"');
-                    $rowResultPagos = mysqli_fetch_array($resultPagos);
-                }
-            }elseif($rowResultPagos){
-                $saldo += round($rowResultPagos['valor']);
-                $array[] = array($rowResultPagos['fecha_pago'], Exportar::sacarTildes($rowResultPagos['razon']), $rowResultPagos['numero'],
-                    Exportar::sacarTildes($rowResultPagos['nombre']), round($rowResultPagos['valor']), "", $saldo , '"'.Exportar::sacarTildes($rowResultPagos['notas']).'"');
-                $rowResultPagos = mysqli_fetch_array($resultPagos);
-            }elseif($indexGastos < count($gastos)){
-                $saldo -= round($gastos[$indexGastos]->valor);
-                if($gastos[$indexGastos]->valor>0){
-                    //gasto
-                    $array[] = array($gastos[$indexGastos]->fecha_pago, Exportar::sacarTildes($gastos[$indexGastos]->razon), "", "",
-                        "", round($gastos[$indexGastos]->valor), $saldo , '"'.Exportar::sacarTildes($gastos[$indexGastos]->notas).'"', '"'.Exportar::sacarTildes($gastos[$indexGastos]->rubro).'"');
-                }else{
-                    //haber
-                    $array[] = array($gastos[$indexGastos]->fecha_pago, Exportar::sacarTildes($gastos[$indexGastos]->razon), "", "",
-                        round($gastos[$indexGastos]->valor*-1), "", $saldo , '"'.Exportar::sacarTildes($gastos[$indexGastos]->notas).'"', '"'.Exportar::sacarTildes($gastos[$indexGastos]->rubro).'"');
-                }
-
-                $indexGastos += 1;
+            if($pagos[$i]->valor == 0){
+                continue;
             }
-        }
+
+            $fecha = explode("-",$pagos[$i]->fecha_pago);
+            $fecha = $fecha[2] . "/" . $fecha[1] . "/" . $fecha[0];
+                    $saldo += $pagos[$i]->valor;
+
+                    $razon = Exportar::sacarTildes($pagos[$i]->razon);
+
+                    if($pagos[$i]->valor > 0){
+                        //haber
+                        $array[] = array(
+                            $fecha,
+                            Exportar::sacarTildes($pagos[$i]->rubro),
+                            $razon,
+                            "",
+                            $pagos[$i]->valor,
+                            $saldo
+                        );
+                    }else{
+                        //debe
+                        $array[] = array(
+                            $fecha,
+                            Exportar::sacarTildes($pagos[$i]->rubro),
+                            $razon,
+                            $pagos[$i]->valor,
+                            "",
+                            $saldo
+                        );
+                    }
+            }
 
         Exportar::outputCSV($array);
     }

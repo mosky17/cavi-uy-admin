@@ -10,21 +10,20 @@
 require_once(dirname(__FILE__).'/classes/auth.php');
 require_once(dirname(__FILE__).'/classes/socio.php');
 require_once(dirname(__FILE__).'/classes/pago.php');
-require_once(dirname(__FILE__).'/classes/gasto.php');
 require_once(dirname(__FILE__).'/classes/exportar.php');
 require_once(dirname(__FILE__).'/classes/admin.php');
 require_once(dirname(__FILE__).'/classes/recordatorio_deuda.php');
 require_once(dirname(__FILE__).'/classes/horas_trabajo.php');
 require_once(dirname(__FILE__).'/classes/cobrosya.php');
 require_once(dirname(__FILE__).'/classes/transaccion_cobrosya.php');
-require_once(dirname(__FILE__).'/classes/costos.php.php');
+require_once(dirname(__FILE__).'/classes/costos.php');
 
 //************** AUTH ********************
 
 function login(){
 	$username = htmlspecialchars(trim($_POST['email']));
 	$passwd = htmlspecialchars(trim($_POST['passwd']));
-	$remember = htmlspecialchars(trim($_POST['remember']));
+	//$remember = htmlspecialchars(trim($_POST['remember']));
 	echo json_encode(Auth::login($username,$passwd,false));
 }
 function logout(){
@@ -60,7 +59,8 @@ function create_socio(){
         $_POST['telefono'],
         $_POST['observaciones'],
         $_POST['fecha_nacimiento'],
-        $_POST['direccion']);
+        $_POST['direccion'],
+        $_POST['tamanio']);
 	echo json_encode($result);
 }
 function update_socio(){
@@ -75,7 +75,8 @@ function update_socio(){
         $_POST['telefono'],
         $_POST['observaciones'],
         $_POST['fecha_nacimiento'],
-        $_POST['direccion']
+        $_POST['direccion'],
+        $_POST['tamanio']
     );
     echo json_encode($result);
 }
@@ -107,8 +108,17 @@ function send_estados_de_cuenta(){
 //************** PAGO ********************
 
 function ingresar_pago(){
-    $result = Pago::ingresar_pago($_POST['id_socio'],$_POST['valor'],$_POST['fecha_pago'],
-        $_POST['razon'],$_POST['tipo'],$_POST['notas'],$_POST['descuento'],$_POST['descuento_json']);
+    $result = Pago::ingresar_pago(
+        $_POST['id_socio'],
+        $_POST['valor'],
+        $_POST['fecha_pago'],
+        $_POST['razon'],
+        $_POST['tipo'],
+        $_POST['notas'],
+        $_POST['descuento'],
+        $_POST['descuento_json'],
+        $_POST['rubro']
+    );
     echo json_encode($result);
 }
 function salvar_pago_modificar(){
@@ -132,6 +142,10 @@ function cancelar_pago(){
     $result = Pago::cancelar_pago($_POST['id']);
     echo json_encode($result);
 }
+function get_totales(){
+    $result = Pago::get_totales();
+    echo json_encode($result);
+}
 
 //************** LOG ********************
 
@@ -142,29 +156,26 @@ function get_lista_logs(){
 
 //************** GASTO ********************
 
-function get_gasto(){
-    $result = Gasto::get_gasto($_POST['id']);
-    echo json_encode($result);
-}
-function cancelar_gasto(){
-    $result = Gasto::cancelar_gasto($_POST['id']);
-    echo json_encode($result);
-}function update_rubro_gasto(){
-    $result = Gasto::update_rubro_gasto($_POST['id'],$_POST['rubro']);
-    echo json_encode($result);
-}
-function ingresar_gasto(){
-    $result = Gasto::ingresar_gasto($_POST['valor'],$_POST['fecha_pago'],$_POST['razon'],$_POST['notas'],$_POST['rubro']);
-    echo json_encode($result);
-}
-function get_lista_gastos(){
-    $result = Gasto::get_lista_gastos();
-    echo json_encode($result);
-}
-function get_totales(){
-    $result = Gasto::get_totales();
-    echo json_encode($result);
-}
+//function get_gasto(){
+//    $result = Gasto::get_gasto($_POST['id']);
+//    echo json_encode($result);
+//}
+//function cancelar_gasto(){
+//    $result = Gasto::cancelar_gasto($_POST['id']);
+//    echo json_encode($result);
+//}function update_rubro_gasto(){
+//    $result = Gasto::update_rubro_gasto($_POST['id'],$_POST['rubro']);
+//    echo json_encode($result);
+//}
+//function ingresar_gasto(){
+//    $result = Gasto::ingresar_gasto($_POST['valor'],$_POST['fecha_pago'],$_POST['razon'],$_POST['notas'],$_POST['rubro']);
+//    echo json_encode($result);
+//}
+//function get_lista_gastos(){
+//    $result = Gasto::get_lista_gastos();
+//    echo json_encode($result);
+//}
+
 
 //************** ENTREGA ********************
 

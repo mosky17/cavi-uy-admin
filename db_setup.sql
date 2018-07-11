@@ -106,6 +106,7 @@ CREATE TABLE `socios` (
   `hash` varchar(300) NOT NULL,
   `direccion` varchar(300) NOT NULL,
   `balance_efectivo` decimal(10,2) NOT NULL,
+  `tamanio` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -166,12 +167,13 @@ CREATE TABLE `transacciones_cobrosya` (
 -- Table structure for table `transacciones_cobrosya`
 --
 
-CREATE TABLE `descuentos_por_trabajo` (
+CREATE TABLE `horas_trabajadas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_socio` int(11) NOT NULL,
-  `razon` varchar(20) NOT NULL,
+  `costo_hora` int(4) NOT NULL,
+  `rubro` varchar(20) NOT NULL,
   `notas` text NOT NULL,
-  `descuento` decimal(10,1) NOT NULL,
+  `cantidad_horas` decimal(10,1) NOT NULL,
   `created_at` date NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;

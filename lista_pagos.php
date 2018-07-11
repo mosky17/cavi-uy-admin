@@ -1,4 +1,8 @@
 <?php
+/**
+ * Coded by Mosky
+ * https://github.com/mosky17
+ */
 
 require_once(dirname(__FILE__) . '/layout.php');
 require_once(dirname(__FILE__) . '/proc/classes/auth.php');
@@ -97,20 +101,20 @@ if (Auth::access_level() < 0) {
             </div>
         </div>
 
-        <h2>Meses Inpagos</h2>
-        <div class="box">
-            <div class="socioListaContenedor">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Mes</th>
-                        <th>Socio</th>
-                    </tr>
-                    </thead>
-                    <tbody id="listaMesesInpagosTabla"></tbody>
-                </table>
-            </div>
-        </div>
+<!--        <h2>Meses Inpagos</h2>-->
+<!--        <div class="box">-->
+<!--            <div class="socioListaContenedor">-->
+<!--                <table class="table table-hover">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>Mes</th>-->
+<!--                        <th>Socio</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody id="listaMesesInpagosTabla"></tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
 
     </div>
 
@@ -128,18 +132,30 @@ if (Auth::access_level() < 0) {
                     <div id="nuevaCuotaCostoModalFeedback" class="feedbackContainerModal"></div>
                     <table class="macroTabla">
                         <tr>
-                            <td class="fieldname">Valor</td>
+                            <td class="fieldname">Valor base</td>
                             <td>
                                 <input type="text" class="nuevaCuotaCosto_valor" placeholder="0.00">
                             </td>
                         </tr>
                         <tr>
-                            <td class="fieldname">Fecha Desde</td>
+                            <td class="fieldname">Fecha desde</td>
                             <td><input type="text" class="nuevaCuotaCosto_fecha_inicio" placeholder="01/01/2015"></td>
                         </tr>
                         <tr>
-                            <td class="fieldname">Fecha Hasta</td>
+                            <td class="fieldname">Fecha hasta</td>
                             <td><input type="text" class="nuevaCuotaCosto_fecha_fin" placeholder="01/01/2015"></td>
+                        </tr>
+                        <tr>
+                            <td class="fieldname">Descuento pago anual</td>
+                            <td><select class="nuevaCuotaCosto_descuento_anio">
+                                    <option value="1_mes">1 mes de descuento</option>
+                                </select></td>
+                        </tr>
+                        <tr>
+                            <td class="fieldname">Descuentos por tamaño</td>
+                            <td><select class="nuevaCuotaCosto_tiers_discounts">
+                                    <option value="3">1/3 cuota 9 o menos, 2/3 19 o menos</option>
+                                </select></td>
                         </tr>
                     </table>
                 </div>
