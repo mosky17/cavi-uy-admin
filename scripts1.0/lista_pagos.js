@@ -156,7 +156,7 @@ var ListaPagos = {
                     $('#listaDeudasTabla').append('<tr>' +
                         '<td>' + data[i].monto + '</td>' +
                         '<td>' + data[i].razon + '</td>' +
-                        '<td><a href="/socio.php?id=' + data[i].id_socio + '" class="label" style="background-color:#AF002A;">#' + ListaPagos.ListaSocios[data[i].id_socio].numero + ' ' + ListaPagos.ListaSocios[data[i].id_socio].nombre + '</a></td>' +
+                        '<td><a href="/socio.php?id=' + data[i].id_socio + '" class="badge badge-danger">#' + ListaPagos.ListaSocios[data[i].id_socio].numero + ' ' + ListaPagos.ListaSocios[data[i].id_socio].nombre + '</a></td>' +
                         '<td><a href="#" onclick="ListaPagos.CancelarDeuda(\'' + data[i].id + '\');return false;">cancelar</a></td></tr>');
                 }
             } else {

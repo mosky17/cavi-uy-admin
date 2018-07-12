@@ -154,49 +154,6 @@ function get_lista_logs(){
     echo json_encode($result);
 }
 
-//************** GASTO ********************
-
-//function get_gasto(){
-//    $result = Gasto::get_gasto($_POST['id']);
-//    echo json_encode($result);
-//}
-//function cancelar_gasto(){
-//    $result = Gasto::cancelar_gasto($_POST['id']);
-//    echo json_encode($result);
-//}function update_rubro_gasto(){
-//    $result = Gasto::update_rubro_gasto($_POST['id'],$_POST['rubro']);
-//    echo json_encode($result);
-//}
-//function ingresar_gasto(){
-//    $result = Gasto::ingresar_gasto($_POST['valor'],$_POST['fecha_pago'],$_POST['razon'],$_POST['notas'],$_POST['rubro']);
-//    echo json_encode($result);
-//}
-//function get_lista_gastos(){
-//    $result = Gasto::get_lista_gastos();
-//    echo json_encode($result);
-//}
-
-
-//************** ENTREGA ********************
-
-function get_entregas_socio(){
-    $result = Entrega::get_entregas_socio($_POST['id_socio']);
-    echo json_encode($result);
-}
-function get_lista_entregas(){
-    $result = Entrega::get_lista_entregas();
-    echo json_encode($result);
-}
-function ingresar_entrega(){
-    $result = Entrega::ingresar_entrega($_POST['fecha'],$_POST['id_socio'],$_POST['gramos'],$_POST['variedad'],$_POST['notas']);
-    echo json_encode($result);
-}
-function cancelar_entrega(){
-    $result = Entrega::cancelar_entrega($_POST['id']);
-    echo json_encode($result);
-}
-
-
 //************** ADMINS ********************
 
 function get_lista_admins(){
@@ -214,57 +171,6 @@ function update_admin(){
 function delete_admin(){
     $result = Admin::delete_admin($_POST['id']);
     echo json_encode($result);
-}
-
-//************** GENETICAS ********************
-
-function get_lista_geneticas(){
-    $result = Genetica::get_lista_geneticas();
-    echo json_encode($result);
-}
-function ingresar_genetica(){
-    $result = Genetica::ingresar_genetica($_POST['nombre'],$_POST['origen'],$_POST['detalles']);
-    echo json_encode($result);
-}
-function update_genetica(){
-    $result = Genetica::update_genetica($_POST['id'],$_POST['nombre'],$_POST['origen'],$_POST['detalles']);
-    echo json_encode($result);
-}
-function delete_genetica(){
-    $result = Genetica::delete_genetica($_POST['id']);
-    echo json_encode($result);
-}
-
-function get_producido_por_genetica(){
-    $result = Genetica::get_producido_por_genetica($_POST['id']);
-    echo json_encode($result);
-}
-
-//************** INFORMES COSECHA ********************
-function get_informes_cosecha(){
-    $result = InformeCosecha::get_lista_informes();
-    echo json_encode($result);
-}
-function ingresar_informe_cosecha(){
-    $result = InformeCosecha::ingresar_informe($_POST['fecha'],
-                                            $_POST['id_genetica'],
-                                            $_POST['cantidad_plantas'],
-                                            $_POST['peso_total_fresco'],
-                                            $_POST['peso_total_seco'],
-                                            $_POST['lote'],
-                                            $_POST['responsable_tecnico'],
-                                            $_POST['responsable_produccion'],
-                                            $_POST['aclaraciones']);
-
-    echo json_encode($result);
-}
-function borrar_informe_cosecha(){
-    $result = InformeCosecha::borrar_informe($_POST['id']);
-    echo json_encode($result);
-}
-
-function exportar_informe_cosecha(){
-    InformeCosecha::exportar_informes($_GET['ids'],$_GET['periodo']);
 }
 
 //************** DATOS ********************

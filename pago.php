@@ -21,8 +21,10 @@ if (Auth::access_level() < 0) {
     <body>
     <div class="container">
         <div class="socioHeader">
+            <i class="fas fa-angle-left back-button" onclick="Pago.GoBack();"></i>
             <h2 id="pagoNombreTitulo" style="float: left;"></h2>
-            <div style="float: left;margin: 25px 0 0 10px;"><a href="#" onclick="Pago.Editar();return false;">editar</a></div>
+            <i style="margin:8px 0 0 15px;" class="fas fa-pencil-alt socioIconBtnTitle" onClick="Pago.Editar();" title="Editar pago"></i>
+<!--            <div style="float: left;margin: 25px 0 0 10px;"><a href="#" onclick="Pago.Editar();return false;">editar</a></div>-->
             <span id="pagoLabelEstado" class="label labelCancelado">CANCELADO</span>
             <div id=feedbackContainer></div>
         </div>
@@ -56,10 +58,9 @@ if (Auth::access_level() < 0) {
                     <div id="pagoEditarDescuento">
                         <input type="text" placeholder="0.00" id="pagoEditarDescuentoDescuento" style="margin-left: 23px;width:100px;">
                         <select style="margin: 0 0 0 10px;" id="pagoEditarDescuentoRazonDescuento">
-                            <option value="Voluntariado">Voluntariado</option>
+                            <option value="">Sin especificar</option>
                             <option value="Resolucion directiva">Resoluci&oacute;n directiva</option>
-                            <option value="BalanceVoluntariado">Balance Voluntariado</option>
-                            <option value="Otra">Otra</option>
+                            <option value="Balance">Balance</option>
                         </select>
                     </div>
                 </div>

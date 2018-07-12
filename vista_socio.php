@@ -110,7 +110,7 @@ require_once(dirname(__FILE__) . '/vista_layout.php');
         </div>
 
         <!--Horas-->
-        <h3 id="socioEntregasTitulo">Trabajo por descuento</h3>
+        <h3>Trabajo por descuento</h3>
 
         <div class="box row-fluid">
             <div class="span12 socioListaContenedor">

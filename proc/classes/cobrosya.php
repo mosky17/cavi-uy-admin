@@ -19,6 +19,7 @@ define('URL_API_COBRAR', 'http://api.cobrosya.com/v4/cobrar'); //live
 require_once(dirname(__FILE__) . '/auth.php');
 require_once(dirname(__FILE__) . '/socio.php');
 require_once(dirname(__FILE__) . '/pago.php');
+require_once(dirname(__FILE__) . '/mail.php');
 
 date_default_timezone_set('America/Montevideo');
 
@@ -51,7 +52,7 @@ class Cobrosya
         $apellido .= count($nombre_array) > 3 ? " " . $nombre_array[3] : "";
 
         $month_string = strlen((string)$month) == 2 ? (string)$month : "0" . (string)$month;
-        $concepto = "Mensualidad CC El Piso: " . $MONTH_NAMES[$month-1];
+        $concepto = "CAVI: " . $MONTH_NAMES[$month-1];
 
         $cuota_costos = Pago::get_cuota_costos();
         $cuota = 0;
@@ -179,19 +180,12 @@ class Cobrosya
 
         $email_html = '<b>Estimado ' . $nombre . ',</b><br><br>' .
             'Le notificamos que tiene una nueva factura correspondiente al mes de ' . $MONTH_NAMES[$month-1] . '.<br><br>'.
-//            'A partir del mes de Setiembre del 2017 la cuota tendrá un valor de $4000. Recordamos que dedicando horas de trabajo tendras un descuento de $200/hr para tu próxima mensualidad.<br><br>'.
-//            '<span style="text-decoration:underline">Formas de Pago:</span><br><br>' .
-//            '<strong>BROU</strong><br>'.
-//            'Puedes hacer una transferencia o deposito a la caja de ahorro numero <b>188-0504831</b> del BROU, en tal caso envianos un email con el detalle del pago, ya sea n&uacute;mero de transferencia o referencia.<br><br>'.
-//            '<strong>Personalmente</strong><br>'.
-//            'Puedes hacer el pago personalmente en nuestra sede solo con previo aviso a la administración.<br><br><br>'.
             $html_link.
             'Atte,<br>'.
-            'La Administraci&oacute;n.<br>'.
-            'Club Cann&aacute;bico El Piso';
+            'CAVI';
         $email_subject = "Notificación de factura";
 
-        Mandrill::SendDefault("",$email_html,$email_subject,$email,array("CCEP"));
+        Mail::SendDefault($email_html,$email_subject,$email);
     }
 
     static public function enviar_pago_recibido_a_socio($email,$nombre,$month,$year,$hash,$monto){
@@ -235,13 +229,10 @@ class Cobrosya
                         'Puedes visitar tu portal de socio haciendo click en el siguiente boton:<br><br>'.
                         $html_link.
                         '<br>Atte,<br>'.
-                        'La Administraci&oacute;n.<br>'.
-                        'Club Cann&aacute;bico El Piso';
+                        'CAVI';
 
                     $email_subject = "Pago recibido";
 
-                    $email_tags = array('CCEP');
-
-                    Mandrill::SendDefault($email_text,$email_html,$email_subject,$email,$email_tags);
+                    Mail::SendDefault($email_html,$email_subject,$email);
     }
 }

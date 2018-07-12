@@ -384,17 +384,6 @@ height: 28px;
     margin: 0;
 }
 
-.container_macroentrega_socios {
-    max-height: 170px;
-    overflow-y: auto;
-    margin-left: 20px;
-    margin-top: 10px;
-}
-
-.informeCosechaGenetica {
-    height: auto;
-}
-
 .table-datos {
     margin-top: 40px;
 }
@@ -447,28 +436,6 @@ height: 28px;
 #index-warning-doc {
     display: none;
     margin-bottom: 10px;
-}
-
-.macropago_socio_label,
-.macroentrega_socio_label,
-.generarRecibos_variedad_label{
-    float: left;
-    margin: 1px 0 0 5px;
-}
-
-#macropago_tabla_socios td,
-#macroentrega_tabla_socios td{
-    width: 33%;
-}
-
-#macropago_tabla_socios,
-#macroentrega_tabla_socios{
-    width: 446px;
-}
-
-.macropago_socio_chk,
-.macroentrega_socio_chk{
-    margin-left: 0 !important;
 }
 
 .container_macropago_socios {
@@ -564,9 +531,17 @@ height: 28px;
 }
 
 .btn-toolbar .btn {
-    margin: 0 5px;
+    margin: 0 10px 0 0;
 }
 
 .form_table {
 width:100%;
+}
+
+.back-button {
+    float: left;
+    font-size: 40px;
+    margin: 0 15px 0 0;
+    color: #999;
+    cursor: pointer;
 }

@@ -98,8 +98,8 @@ var Index = {
                                 }
                             }
 
-                            $('#listaSociosTabla').append('<tr onClick="document.location.href = \'socio.php?id=' + data[i].id + '\';"><td>' + data[i].numero + '</td>' +
-                                '<td>' + data[i].nombre + '</td>' +
+                            $('#listaSociosTabla').append('<tr><td>' + data[i].numero + '</td>' +
+                                '<td><a href="' + GLOBAL_domain + '/socio.php?id=' + data[i].id + '">' + data[i].nombre + '</a></td>' +
                                 '<td>' + data[i].email + '</td>' +
                                 '<td>' + Toolbox.MysqlDateToDate(data[i].fecha_inicio) + '</td>' +
                                 '<td>' + tagsHtml + '</td></tr>');

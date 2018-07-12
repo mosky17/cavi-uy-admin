@@ -2,7 +2,6 @@ var VistaSocio = {
     IdSocio: null,
     Hash:null,
     SocioData: {},
-    Geneticas: null,
     BalanceHoras:0,
     DescuentoBalanceHoras:0,
     LoadSocio: function () {

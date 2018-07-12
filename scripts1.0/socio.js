@@ -9,7 +9,6 @@ var Socio = {
     IdSocio: null,
     Tags: {},
     SocioData: {},
-    Geneticas: null,
     CuotaCostos: null,
     CurrentCostoCuota: 0,
     BalanceHoras:0,
@@ -865,6 +864,9 @@ var Socio = {
 
             $('#socioIngresarPagoDescuento').val(aDescountar);
         }
+    },
+    GoBack: function() {
+        document.location.href = GLOBAL_domain + "/index.php";
     }
 }
 

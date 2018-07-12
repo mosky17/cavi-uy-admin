@@ -17,6 +17,7 @@ if (Auth::access_level() < 0) {
     <body>
     <div class="container">
         <div class="socioHeader">
+            <i class="fas fa-angle-left back-button" onclick="Socio.GoBack();"></i>
             <h2 id="socioNombreTitulo"></h2>
             <span id="socioLabelEstado" class="badge"></span>
 
@@ -188,7 +189,7 @@ background: #ff670f; /* Old browsers */
 
 
     <!--Horas-->
-    <h3 id="socioEntregasTitulo">Trabajo por descuento</h3>
+    <h3>Trabajo por descuento</h3>
 
         <div class="botoneraTopContainer">
             <div class="btn btn-success" title="Ingresar horas de trabajo" onclick="Socio.OpenModalIngresarHoras();">Agregar

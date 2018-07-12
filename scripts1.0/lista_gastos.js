@@ -40,7 +40,7 @@ var ListaGastos = {
                             razon = "Ingreso socio: " + Toolbox.TransformSpecialTag(data[i].razon);
                         }
 
-                        $('#listaGastosTabla').append('<tr onClick="document.location.href = \'gasto.php?id=' + data[i].id + '\'"><td>' + data[i].id + '</td>' +
+                        $('#listaGastosTabla').append('<tr><td><a href="' + GLOBAL_domain + '/pago.php?id=' + data[i].id + '">' + data[i].id + '</a></td>' +
                             '<td>' + valor + '</td>' +
                             '<td>' + haber + '</td>' +
                             '<td>' + Toolbox.MysqlDateToDate(data[i].fecha_pago) + '</td>' +

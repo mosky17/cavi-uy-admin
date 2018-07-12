@@ -153,6 +153,9 @@ var Toolbox = {
             case "personalmente":
                 return '<span class="badge badge-danger">En Persona</span>';
                 break;
+            case "Socio":
+                return '<span class="badge badge-success">Socio</span>';
+                break;
 
             //descuentos
             case "Balance":

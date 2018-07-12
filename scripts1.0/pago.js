@@ -128,6 +128,9 @@ var Pago = {
             }
             Toolbox.StopLoader();
         });
+    },
+    GoBack: function() {
+        document.location.href = GLOBAL_domain + "/lista_pagos.php";
     }
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/classes/mandrill.php');
+require_once(dirname(__FILE__) . '/classes/mail.php');
 require_once(dirname(__FILE__) . '/classes/socio.php');
 require_once(dirname(__FILE__) . '/classes/pago.php');
 require_once(dirname(__FILE__).'/../config.php');
@@ -55,29 +55,18 @@ foreach($socios as $socio){
                 "\">Estado de tu membres&iacute;a</a><br><br>";
 
             //send recordatorio
-            $email_text = "";
             $email_html = '<b>Estimado Socio,</b><br><br>' .
-                'Este es un recordatorio de que tienes tiempo hasta el 15 de ' . $MONTH_NAMES[$current_month] . ' para pagar tu cuota, de lo contrario una vez vencida va a incurrir en un recargo del 10%.<br><br>'.
-                'A partir del mes de Abril del 2018 la cuota tendrá un valor de $4500. Recordamos que dedicando horas de trabajo tendras un descuento de $225/hr para tu próxima mensualidad.<br><br>'.
-                '<span style="text-decoration:underline">Formas de Pago:</span><br><br>' .
-                '<strong>BROU</strong><br>'.
-                'Puedes hacer una transferencia o deposito a la caja de ahorro numero <b>188-0504831</b> del BROU, en tal caso envianos un email con el detalle del pago, ya sea n&uacute;mero de transferencia o referencia.<br><br>'.
-                '<strong>Personalmente</strong><br>'.
-                'Puedes hacer el pago personalmente en nuestra sede solo con previo aviso a la administración.<br><br><br>'.
                 $html_link.
-                '<br><br>Buen comienzo de mes!<br><br>'.
                 'Atte,<br>'.
-                'La Administraci&oacute;n.<br>'.
-                'Club Cann&aacute;bico El Piso';
-            $email_subject = "CCEP - Estado de tu membresía";
+                'CAVI';
+            $email_subject = "Estado de su membresía";
             $email_to = $socio->email;
-            $email_tags = array('CCEP');
             //if($socio->email == 'martin.gaibisso@gmail.com'){
                 //echo "\nSENDING EMAIL TO: " . $socio->email;
 
             echo "sending to: ".$socio->email."\n";
 
-            Mandrill::SendDefault($email_text,$email_html,$email_subject,$email_to,$email_tags);
+            Mail::SendDefault($email_html,$email_subject,$email_to);
             //}
         }
     }
