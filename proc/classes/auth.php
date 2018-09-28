@@ -23,7 +23,7 @@ class Auth {
         //Auth::$mysqli = new mysqli('p:'.DB::db_server, DB::db_username, DB::db_passwd, DB::db_name) or die("cannot connect to DB");
         //Auth::$mysqli->set_charset("utf8");
 
-        Auth::$mysqli = mysqli_connect("localhost", DB::db_username, DB::db_passwd, DB::db_name);
+        Auth::$mysqli = mysqli_connect(DB::db_server, DB::db_username, DB::db_passwd, DB::db_name);
 
         // Check connection
         if (mysqli_connect_errno())
